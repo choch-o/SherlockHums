@@ -1,7 +1,8 @@
 var fs = require('fs');
 var dirname = "/home/youngsoo/SherlockHums/server/Recorded";
 var recordedFileAMR = "recordedFile.amr";
-var recordedFileWAV = "recordedFile.wav"; 
+var recordedFileWAV = "recordedFile.wav";
+var recordedFileMID = "recordedFile.mid";
 var chunks = [];
 var PythonShell = require('python-shell');
 
@@ -25,6 +26,11 @@ module.exports = function(app, Music){
         console.log("Get recorded file(.wav)!");
     });
 
+    // GET RECORDED FILE (.mid)
+    app.get('/recorded.mid', function(req, res){
+        res.sendFile(dirname + '/' + recordedFileMID);
+        console.log("Get recorded file(.mid)!");
+    });
 
     // UPLOAD RECORDED FILE
     app.post('/recorded', function(req, res){
@@ -35,26 +41,32 @@ module.exports = function(app, Music){
 
         req.on('end', function(){
             var data = Buffer.concat(chunks);
-            fs.writeFile(dirname + "/" + recordedFileAMR, data, 'binary', function(err){
+            fs.writeFile(dirname + "/" + recordedFileWAV, data, 'binary', function(err){
                 if (err) {
                     console.log("Can't upload recorded file! " + err);
                 } else {
                     console.log("Upload of the recorded file is successful!");
-                    console.log("Data : " + data);
+                    //console.log("Data : " + data);
                 }
             });
             res.send("Upload of the recorded file is successful!");
             res.end();
         })
 
-        runScript('./amrToWav.js', function(err){
-            if (err) throw err;
-            console.log('Converting amr to wav is complete!');
-            PythonShell.run('test.py', function(err, results){
-                if (err) throw err;
-                console.log('results : %j', results);
-            });
+        PythonShell.run('audio_to_midi_melodia.py', function(err, results){
+//            if (err) throw err;
+//            console.log('results : %j', results);
+            console.log('Converting wav to mid is complete!');
         });
+
+//        runScript('./amrToWav.js', function(err){
+//            if (err) throw err;
+//            console.log('Converting amr to wav is complete!');
+//            PythonShell.run('audio_to_midi_melodia.py', function(err, results){
+//                if (err) throw err;
+//                console.log('results : %j', results);
+//            });
+//        });
     });
 
 }
