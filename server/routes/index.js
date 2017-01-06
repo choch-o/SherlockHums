@@ -1,5 +1,5 @@
 var fs = require('fs');
-var dirname = "home/youngsoo/SherlockHums/Recorded";
+var dirname = "/home/youngsoo/SherlockHums/server/Recorded";
 var recordedFileName = "recordedFile.amr";
 var chunks = [];
 
@@ -26,7 +26,7 @@ module.exports = function(app, Music){
 
         req.on('end', function(){
             var data = Buffer.concat(chunks);
-            fs.writeFile(recordedFileName, data, 'binary', function(err){
+            fs.writeFile(dirname + "/" + recordedFileName, data, 'binary', function(err){
                 if (err) {
                     console.log("Can't upload recorded file! " + err);
                 } else {
@@ -34,7 +34,9 @@ module.exports = function(app, Music){
                     console.log("Data : " + data);
                 }
             });
+            res.send("Upload of the recorded file is successful!");
+            res.end();
         });
-    }
+    });
 
 }
