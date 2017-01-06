@@ -3,6 +3,7 @@ var dirname = "/home/youngsoo/SherlockHums/server/Recorded";
 var recordedFileAMR = "recordedFile.amr";
 var recordedFileWAV = "recordedFile.wav"; 
 var chunks = [];
+var PythonShell = require('python-shell');
 
 module.exports = function(app, Music){
 
@@ -45,9 +46,14 @@ module.exports = function(app, Music){
             res.send("Upload of the recorded file is successful!");
             res.end();
         })
+
         runScript('./amrToWav.js', function(err){
             if (err) throw err;
             console.log('Converting amr to wav is complete!');
+            PythonShell.run('test.py', function(err, results){
+                if (err) throw err;
+                console.log('results : %j', results);
+            });
         });
     });
 
