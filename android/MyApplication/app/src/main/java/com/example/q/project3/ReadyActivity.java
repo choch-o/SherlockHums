@@ -43,9 +43,9 @@ public class ReadyActivity extends AppCompatActivity {
     public void createTestRanks() {
         String[] data;
         data = new String[4];
-        data[0] = Integer.toString(1);
+        data[0] = "1";
         data[2] = "Youngsoo Jang";
-        data[3] = Integer.toString(54321);
+        data[3] = "54321";
         ranks.add(data);
         data = new String[4];
         data[0] = Integer.toString(2);
