@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -37,6 +38,13 @@ public class ReadyActivity extends AppCompatActivity {
         ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
         RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
         LV_ranking.setAdapter(rankingListViewAdapter);
+
+        LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
 
     }
 
