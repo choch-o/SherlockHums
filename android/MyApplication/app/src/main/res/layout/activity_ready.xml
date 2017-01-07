@@ -6,7 +6,7 @@
     android:background="@color/colorBackground">
 
     <ListView
-        android:id="@+id/ranking_listview"
+        android:id="@+id/listViewRanking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
@@ -15,6 +15,7 @@
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="START\n0 / 4"/>
+        android:text="START\n\n0 / 4"
+        android:textSize="18dp"/>
 
 </LinearLayout>
