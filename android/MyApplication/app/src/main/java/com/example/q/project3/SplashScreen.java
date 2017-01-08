@@ -28,13 +28,15 @@ public class SplashScreen extends AppCompatActivity {
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    if (isLoggedIn()) {
-                        Intent intent = new Intent(getApplicationContext(), ReadyActivity.class);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
-                        startActivity(intent);
-                    }
+//                    if (isLoggedIn()) {
+//                        Intent intent = new Intent(getApplicationContext(), ReadyActivity.class);
+//                        startActivity(intent);
+//                    } else {
+//                        Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
+//                        startActivity(intent);
+//                    }
+                    Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
+                    startActivity(intent);
                 }
             }
         };
