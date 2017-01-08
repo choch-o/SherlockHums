@@ -30,6 +30,15 @@
         android:textSize="30dp"
         android:text="Beyonce"
         android:gravity="center_horizontal"/>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/artist"
+        android:layout_margin="20dp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="19"
+        android:progress="0" />
     <TextView
         android:id="@+id/record_status"
         android:layout_width="match_parent"
@@ -45,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/artist"
         android:src="@drawable/listening"/>
+    <!--
     <TextView
         android:id="@+id/play_status"
         android:layout_width="match_parent"
@@ -52,6 +62,7 @@
         android:layout_below="@id/record_status"
         android:textColor="#ffffff"
         android:layout_centerHorizontal="true" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +100,7 @@
             android:layout_marginEnd="10dp"
             android:layout_weight="1"/>
 
-        <!--
+
         <ImageButton
             android:id="@+id/pause_button"
             android:layout_width="wrap_content"
@@ -107,6 +118,6 @@
             android:background="@drawable/roundedbutton"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp" />
-            -->
     </LinearLayout>
+    -->
 </RelativeLayout>

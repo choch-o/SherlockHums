@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class RecordingActivity extends AppCompatActivity {
@@ -22,6 +23,8 @@ public class RecordingActivity extends AppCompatActivity {
 
     private TextView countdown;
     private ImageView recording;
+
+    private ProgressBar progressBar;
 
     String outputFile = "";
 
@@ -39,6 +42,8 @@ public class RecordingActivity extends AppCompatActivity {
         countdown = (TextView) findViewById(R.id.record_status);
         recording = (ImageView) findViewById(R.id.recording);
         recording.setVisibility(View.GONE);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
 
         new CountDownTimer(6000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -46,6 +51,7 @@ public class RecordingActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 recording.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 countdown.setVisibility(View.GONE);
                 startRecording();
             }
@@ -53,14 +59,14 @@ public class RecordingActivity extends AppCompatActivity {
 
         /*
         recordStatus.setText("Start recording");
-        */
+
         final TextView playStatus = (TextView) findViewById(R.id.play_status);
         playStatus.setText("Start playing");
 
         recordButton = (ImageButton) findViewById(R.id.record_button);
         playButton = (ImageButton) findViewById(R.id.play_button);
         searchButton = (ImageButton) findViewById(R.id.search_button);
-
+        */
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.amr";
 /*
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +86,7 @@ public class RecordingActivity extends AppCompatActivity {
             }
         });
         */
-
+/*
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +108,7 @@ public class RecordingActivity extends AppCompatActivity {
                 recorder.upload(outputFile);
             }
         });
+        */
     }
 
     private void onRecord(boolean start) {
@@ -136,8 +143,10 @@ public class RecordingActivity extends AppCompatActivity {
 
     void startRecording() {
         recorder.startRecording(outputFile);
-        new CountDownTimer(10000, 1000) {
-            public void onTick(long millisUntilFinished) {}
+        new CountDownTimer(10000, 500) {
+            public void onTick(long millisUntilFinished) {
+                progressBar.incrementProgressBy(1);
+            }
             public void onFinish() {
                 recorder.stopRecording(outputFile);
                 recorder.upload(outputFile);
