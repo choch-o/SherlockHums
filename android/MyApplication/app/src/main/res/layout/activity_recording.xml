@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
         android:textSize="40dp"
-        android:textColor="@color/colorRecorder"
         android:layout_marginTop="50dp"
         android:text="Single Lady"
         android:gravity="center_horizontal" />
