@@ -30,7 +30,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".ReadyActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".MainActivity"
+        <activity android:name=".RecordingActivity"
             android:screenOrientation="portrait"></activity>
         <activity android:name=".PlayingActivity"
             android:screenOrientation="portrait"></activity>
