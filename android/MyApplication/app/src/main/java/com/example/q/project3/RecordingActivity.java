@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +13,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class RecordingActivity extends AppCompatActivity {
-    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
-    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
-    private static final int PERMISSIONS_REQUEST_INTERNET = 3;
     private WavRecorder recorder = new WavRecorder();
     private AudioPlayer player = new AudioPlayer();
     private ImageButton recordButton;
@@ -33,24 +31,26 @@ public class RecordingActivity extends AppCompatActivity {
         title.setText(i.getStringExtra("title"));
         final TextView artist = (TextView) findViewById(R.id.artist);
         artist.setText(i.getStringExtra("artist"));
+
         final TextView recordStatus = (TextView) findViewById(R.id.record_status);
+        new CountDownTimer(6000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                recordStatus.setText(Long.toString(millisUntilFinished / 1000));
+            }
+            public void onFinish() {
+                recordStatus.setText("Record");
+            }
+        }.start();
+
+        /*
         recordStatus.setText("Start recording");
+        */
         final TextView playStatus = (TextView) findViewById(R.id.play_status);
         playStatus.setText("Start playing");
+
         recordButton = (ImageButton) findViewById(R.id.record_button);
         playButton = (ImageButton) findViewById(R.id.play_button);
         searchButton = (ImageButton) findViewById(R.id.search_button);
-
-
-        // Check the SDK version and whether the permission is already granted or not.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-            if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
-                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
-            if (this.checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
-                requestPermissions(new String[]{Manifest.permission.INTERNET}, PERMISSIONS_REQUEST_INTERNET);
-        }
 
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.amr";
 
