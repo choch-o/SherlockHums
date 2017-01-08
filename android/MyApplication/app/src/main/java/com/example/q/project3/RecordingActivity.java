@@ -1,23 +1,17 @@
 package com.example.q.project3;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
-import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-
-public class MainActivity extends AppCompatActivity {
+public class RecordingActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
     private static final int PERMISSIONS_REQUEST_INTERNET = 3;
@@ -32,8 +26,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_recording);
 
+        Intent i = getIntent();
+        final TextView title = (TextView) findViewById(R.id.title);
+        title.setText(i.getStringExtra("title"));
+        final TextView artist = (TextView) findViewById(R.id.artist);
+        artist.setText(i.getStringExtra("artist"));
         final TextView recordStatus = (TextView) findViewById(R.id.record_status);
         recordStatus.setText("Start recording");
         final TextView playStatus = (TextView) findViewById(R.id.play_status);

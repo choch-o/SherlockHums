@@ -8,17 +8,43 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.q.project3.MainActivity"
-    android:background="#13203e">
+    tools:context="com.example.q.project3.RecordingActivity"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textSize="40dp"
+        android:textColor="@color/colorRecorder"
+        android:layout_marginTop="50dp"
+        android:text="Single Lady"
+        android:gravity="center_horizontal" />
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/title"
+        android:textColor="#ffffff"
+        android:textSize="30dp"
+        android:text="Beyonce"
+        android:gravity="center_horizontal"/>
     <TextView
         android:id="@+id/record_status"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/artist"
+        android:textColor="#ffffff"
+        android:layout_centerHorizontal="true" />
     <TextView
         android:id="@+id/play_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/record_status" />
+        android:layout_below="@id/record_status"
+        android:textColor="#ffffff"
+        android:layout_centerHorizontal="true" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
