@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class RecordingActivity extends AppCompatActivity {
@@ -18,6 +19,9 @@ public class RecordingActivity extends AppCompatActivity {
     private ImageButton recordButton;
     private ImageButton playButton;
     private ImageButton searchButton;
+
+    private TextView countdown;
+    private ImageView recording;
 
     String outputFile = "";
 
@@ -32,13 +36,18 @@ public class RecordingActivity extends AppCompatActivity {
         final TextView artist = (TextView) findViewById(R.id.artist);
         artist.setText(i.getStringExtra("artist"));
 
-        final TextView recordStatus = (TextView) findViewById(R.id.record_status);
+        countdown = (TextView) findViewById(R.id.record_status);
+        recording = (ImageView) findViewById(R.id.recording);
+        recording.setVisibility(View.GONE);
+
         new CountDownTimer(6000, 1000) {
             public void onTick(long millisUntilFinished) {
-                recordStatus.setText(Long.toString(millisUntilFinished / 1000));
+                countdown.setText(Long.toString(millisUntilFinished / 1000));
             }
             public void onFinish() {
-                recordStatus.setText("Record");
+                recording.setVisibility(View.VISIBLE);
+                countdown.setVisibility(View.GONE);
+                startRecording();
             }
         }.start();
 
@@ -53,7 +62,7 @@ public class RecordingActivity extends AppCompatActivity {
         searchButton = (ImageButton) findViewById(R.id.search_button);
 
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.amr";
-
+/*
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +79,7 @@ public class RecordingActivity extends AppCompatActivity {
 
             }
         });
+        */
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,5 +132,19 @@ public class RecordingActivity extends AppCompatActivity {
             player.release();
             player = null;
         }
+    }
+
+    void startRecording() {
+        recorder.startRecording(outputFile);
+        new CountDownTimer(10000, 1000) {
+            public void onTick(long millisUntilFinished) {}
+            public void onFinish() {
+                recorder.stopRecording(outputFile);
+                recorder.upload(outputFile);
+                // Intent toPlaying = new Intent(RecordingActivity.this, PlayingActivity.class);
+                // startActivity(toPlaying);
+                finish();
+            }
+        }.start();
     }
 }

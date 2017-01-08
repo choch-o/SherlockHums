@@ -19,6 +19,7 @@ import java.util.ArrayList;
  */
 
 public class PlayingActivity extends Activity {
+    int RECORDER = 1;
     int currentRecorder = 1;
     JSONArray tempSongs;
     String currTitle;
@@ -70,7 +71,23 @@ public class PlayingActivity extends Activity {
             Intent i = new Intent(PlayingActivity.this, RecordingActivity.class);
             i.putExtra("title", currTitle);
             i.putExtra("artist", currArtist);
-            startActivity(i);
+            startActivityForResult(i, RECORDER);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*
+        if (requestCode == RECORDER) {
+            if (currentRecorder > 3 ) {
+                currentRecorder = 1;
+            } else {
+                currentRecorder++;
+            }
+            // TEMP
+            is_recorder = false;
+        }
+        */
+
     }
 }
