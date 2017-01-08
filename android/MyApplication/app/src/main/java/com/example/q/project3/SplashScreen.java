@@ -35,8 +35,6 @@ public class SplashScreen extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
                         startActivity(intent);
                     }
-//                    Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
-//                    startActivity(intent);
                 }
             }
         };
