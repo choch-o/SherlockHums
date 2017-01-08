@@ -1,12 +1,15 @@
 package com.example.q.project3;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class SplashScreen extends Activity {
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+
+public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,6 +18,7 @@ public class SplashScreen extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.splash);
 
         Thread timerThread = new Thread() {
@@ -24,8 +28,13 @@ public class SplashScreen extends Activity {
                 } catch(InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    Intent intent = new Intent(SplashScreen.this, ReadyActivity.class);
-                    startActivity(intent);
+                    if (isLoggedIn()) {
+                        Intent intent = new Intent(getApplicationContext(), ReadyActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), FacebookLoginActivity.class);
+                        startActivity(intent);
+                    }
                 }
             }
         };
@@ -37,6 +46,11 @@ public class SplashScreen extends Activity {
         // TODO Auto-generated method stub
         super.onPause();
         finish();
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
 }
