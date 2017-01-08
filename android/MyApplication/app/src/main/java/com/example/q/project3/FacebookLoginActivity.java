@@ -46,11 +46,10 @@ public class FacebookLoginActivity extends AppCompatActivity {
                             String userId = object.getString("id");
                             String userName = object.getString("name");
                             String profileImageURL = object.getJSONObject("picture").getJSONObject("data").getString("url");
-                            String score = "0";
-                            String onGame = "false";
 
-                            UserData userData = new UserData(userId, userName, profileImageURL, score, onGame);
-                            databaseReference.child("user").push().setValue(userData);
+                            databaseReference.child("user").child(userId).child("userId").setValue(userId);
+                            databaseReference.child("user").child(userId).child("userName").setValue(userName);
+                            databaseReference.child("user").child(userId).child("profileImageURL").setValue(profileImageURL);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
