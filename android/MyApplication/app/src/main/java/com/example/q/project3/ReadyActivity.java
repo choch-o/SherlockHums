@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,9 +13,20 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class ReadyActivity extends AppCompatActivity {
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
@@ -49,40 +61,48 @@ public class ReadyActivity extends AppCompatActivity {
             }
         });
 
-        createTestRanks();
+        databaseReference.child("user").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.d("data", "******************************************" + dataSnapshot.getValue());
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            String[] data;
+                            data = new String[4];
+                            data[0] = child.child("userId").getValue(String.class);
+                            data[1] = child.child("profileImageURL").getValue(String.class);
+                            data[2] = child.child("userName").getValue(String.class);
+                            if (child.child("score").getValue(Integer.class) == null) {
+                                data[3] = "0";
+                            } else {
+                                data[3] = Integer.toString(child.child("score").getValue(Integer.class));
+                            }
+                            ranks.add(data);
+                        }
+                        Collections.sort(ranks, new Comparator<String[]>() {
+                            @Override
+                            public int compare(String[] o1, String[] o2) {
+                                return (Integer.parseInt(o2[3]) - Integer.parseInt(o1[3]));
+                            }
+                        });
 
-        ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
-        RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
-        LV_ranking.setAdapter(rankingListViewAdapter);
+                        ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
+                        RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
+                        LV_ranking.setAdapter(rankingListViewAdapter);
 
-        LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
+                            }
+                        });
+                    }
 
-    }
-
-    public void createTestRanks() {
-        String[] data;
-        data = new String[4];
-        data[0] = "1";
-        data[2] = "Youngsoo Jang";
-        data[3] = "54321";
-        ranks.add(data);
-        data = new String[4];
-        data[0] = Integer.toString(2);
-        data[2] = "Hyunsung Cho";
-        data[3] = Integer.toString(4321);
-        ranks.add(data);
-        for(int i = 3; i < 20; i++) {
-            data = new String[4];
-            data[0] = Integer.toString(i);
-            data[2] = "Player" + Integer.toString(i);
-            data[3] = Integer.toString(i * 100);
-            ranks.add(data);
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d("getUserList:onCancelled", databaseError.toString());
+                    }
+                });
     }
 
 }

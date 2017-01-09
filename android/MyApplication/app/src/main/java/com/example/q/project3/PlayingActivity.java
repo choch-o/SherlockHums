@@ -191,8 +191,8 @@ public class PlayingActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        databaseReference.child("is_recording").setValue(false);
-        databaseReference.child("mid");
+//        databaseReference.child("is_recording").setValue(false);
+//        databaseReference.child("mid");
     }
 
     void start_guessing() {
