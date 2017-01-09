@@ -20,6 +20,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONArray;
 
@@ -35,7 +37,8 @@ public class PlayingActivity extends Activity {
     /* Firebase setup */
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference().child("game");
-
+    private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+    private StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://sherlockhums-25f4c.appspot.com");
     int RECORDER = 1;
     int currentRecorder = 1;
     int currentRound = 1;
@@ -120,6 +123,9 @@ public class PlayingActivity extends Activity {
                     case "player4_message":
                         player4_message.setText(value);
                         break;
+                    case "is_recording":
+                        start_guessing();
+                        break;
                     default:
                         break;
                 }
@@ -185,17 +191,11 @@ public class PlayingActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
-        if (requestCode == RECORDER) {
-            if (currentRecorder > 3 ) {
-                currentRecorder = 1;
-            } else {
-                currentRecorder++;
-            }
-            // TEMP
-            is_recorder = false;
-        }
-        */
+        databaseReference.child("is_recording").setValue(false);
+        databaseReference.child("mid");
+    }
+
+    void start_guessing() {
 
     }
 }
