@@ -65,7 +65,6 @@ public class ReadyActivity extends AppCompatActivity {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.d("data", "******************************************" + dataSnapshot.getValue());
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             String[] data;
                             data = new String[4];

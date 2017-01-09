@@ -55,7 +55,6 @@ public class PlayingActivity extends Activity {
     int round = 0;
 
     String prevMIDIfile = "";
-    AudioPlayer player = new AudioPlayer();
 
     TextView player1_message;
     TextView player2_message;
