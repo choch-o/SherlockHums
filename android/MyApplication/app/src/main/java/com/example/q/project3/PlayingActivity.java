@@ -10,22 +10,40 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by q on 2017-01-07.
  */
 
 public class PlayingActivity extends Activity {
+    /* Firebase setup */
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+
     int RECORDER = 1;
     int currentRecorder = 1;
+    int currentRound = 1;
     JSONArray tempSongs;
     String currTitle;
     String currArtist;
     int round = 0;
-    // ArrayList<String> tempSongs = new ArrayList<>();
+
+    TextView player1_message;
+    TextView player2_message;
+    TextView player3_message;
+    TextView player4_message;
 
     /* Temp variables */
     boolean is_recorder = true;
@@ -37,6 +55,49 @@ public class PlayingActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playing);
+
+        player1_message = (TextView) findViewById(R.id.player1);
+
+        GameData gameData = new GameData();
+        Map<String, Object> gameValues = gameData.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("curr_recorder", currentRecorder);
+        childUpdates.put("curr_round", currentRound);
+        childUpdates.put("is_recording", true);
+
+        databaseReference.child("game").updateChildren(childUpdates);
+
+        databaseReference.child("game").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                // GameData gameData = dataSnapshot.getValue(GameData.class);
+                String value = dataSnapshot.getValue(String.class);
+                Log.d("GAME DATA", "VALUE IS: " + value);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Failed to read value
+                Log.d("FAIL IN DB", "Failed to read value. ", databaseError.toException());
+            }
+        });
+
+
         try {
             tempSongs = new JSONArray(
                     "[ {\"title\": \"Single lady\", \"artist\": \"Beyonce\"}, "
