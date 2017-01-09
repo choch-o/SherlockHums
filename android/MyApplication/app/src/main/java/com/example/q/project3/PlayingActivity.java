@@ -3,6 +3,8 @@ package com.example.q.project3;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,17 +16,21 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONArray;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +60,8 @@ public class PlayingActivity extends Activity {
 
     EditText answer_box;
     Button submit_btn;
+
+    String midiFile;
     /* Temp variables */
     boolean is_recorder = true;
 
@@ -103,34 +111,90 @@ public class PlayingActivity extends Activity {
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                Log.d("LONG _STRING!!", dataSnapshot.toString());
+                switch (dataSnapshot.getKey()) {
+                    case "mid":
+                        /*
+                        midiFile = dataSnapshot.getValue(String.class);
+                        databaseReference.updateChildren(childUpdates);
+                        StorageReference midiRef = storageReference.child(midiFile);
+                        try {
+                            final File midiFile = File.createTempFile("midiplay", "mid");
+                            midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    AudioPlayer player = new AudioPlayer();
+                                    player.startPlaying(midiFile.getAbsolutePath());
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                        */
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 // GameData gameData = dataSnapshot.getValue(GameData.class);
-                String value = dataSnapshot.getValue(String.class);
+
                 switch (dataSnapshot.getKey()) {
                     case "player1_message":
-                        player1_message.setText(value);
+                        player1_message.setText(dataSnapshot.getValue(String.class));
                         break;
                     case "player2_message":
-                        player2_message.setText(value);
+                        player2_message.setText(dataSnapshot.getValue(String.class));
                         break;
                     case "player3_message":
-                        player3_message.setText(value);
+                        player3_message.setText(dataSnapshot.getValue(String.class));
                         break;
                     case "player4_message":
-                        player4_message.setText(value);
+                        player4_message.setText(dataSnapshot.getValue(String.class));
+                        break;
+                    case "mid":
+                        midiFile = dataSnapshot.getValue(String.class);
+                        databaseReference.updateChildren(childUpdates);
+                        StorageReference midiRef = storageReference.child(midiFile);
+                        Log.d("GHSLKJRFLASJJF", "ININININININININININ");
+                        try {
+                            final File midiFile = File.createTempFile("midiplay", "mid");
+                            midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    final AudioPlayer player = new AudioPlayer();
+                                    player.startPlaying(midiFile.getAbsolutePath());
+                                    new CountDownTimer(10000, 500) {
+                                        public void onTick(long millisUntilFinished) {
+                                        }
+                                        public void onFinish() {
+                                            player.stopPlaying();
+                                        }
+                                    }.start();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case "is_recording":
-                        start_guessing();
-                        break;
+                        if (dataSnapshot.getValue(Boolean.class)) {}
+                        else {
+                            start_guessing();
+                        }
                     default:
                         break;
                 }
-
-                Log.d("GAME DATA", "VALUE IS: " + value);
             }
 
             @Override
@@ -191,8 +255,11 @@ public class PlayingActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        databaseReference.child("is_recording").setValue(false);
-        databaseReference.child("mid");
+        // databaseReference.child("is_recording").setValue(false);
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("is_recording", false);
+
     }
 
     void start_guessing() {

@@ -143,15 +143,13 @@ public class RecordingActivity extends AppCompatActivity {
 
     void startRecording() {
         recorder.startRecording(outputFile);
-        new CountDownTimer(1000, 500) {
+        new CountDownTimer(10000, 500) {
             public void onTick(long millisUntilFinished) {
                 progressBar.incrementProgressBy(1);
             }
             public void onFinish() {
                 recorder.stopRecording(outputFile);
                 recorder.upload(outputFile);
-                // Intent toPlaying = new Intent(RecordingActivity.this, PlayingActivity.class);
-                // startActivity(toPlaying);
                 finish();
             }
         }.start();
