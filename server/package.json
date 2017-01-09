@@ -15,6 +15,7 @@
     "firebase": "^3.6.4",
     "firebase-admin": "^4.0.4",
     "gcloud": "^0.37.0",
-    "mongoose": "^4.7.6"
+    "mongoose": "^4.7.6",
+    "node-uuid": "^1.4.7"
   }
 }

@@ -5,6 +5,7 @@ var recordedFileWAV = "recordedFile.wav";
 var recordedFileMID = "recordedFile.mid";
 var chunks = [];
 var PythonShell = require('python-shell');
+var uuid = require('node-uuid');
 
 var admin = require("firebase-admin");
 
@@ -22,10 +23,10 @@ var gcloud = require("google-cloud");
 
 var storage = gcloud.storage({
     projectId: "sherlockhums-25f4c",
-    keyFilename: "../SherlockHums-c51073a5b67e.json"
+    keyFilename: "./SherlockHums-c51073a5b67e.json"
 });
 
-var bucket = storage.bucket("gs://sherlockhums-25f4c.appspot.com");
+var bucket = storage.bucket("sherlockhums-25f4c.appspot.com");
 
 module.exports = function(app, Music){
 
@@ -79,7 +80,20 @@ module.exports = function(app, Music){
 //            console.log('results : %j', results);
             console.log('Converting wav to mid is complete!');
             
-            ref.child("game").update({mid: "neWWWWWWWWWWWW!"});
+//            bucket.upload(dirname + "/" + recordedFileMID, function(err, file) {
+//                if (err) {
+//                    console.log("Can't upload mid file to firebase storage! " + err);
+//                } else {
+//                    console.log('Uploading mid file to firebase storage is complete!');
+//                }
+//            });
+
+            var recordedId = uuid.v1() + '.mid';
+            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
+            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
+            localReadStream.pipe(remoteWriteStream);
+
+            ref.child("game").update({mid: recordedId});
         });
 
     });
