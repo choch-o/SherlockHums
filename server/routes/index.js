@@ -6,6 +6,27 @@ var recordedFileMID = "recordedFile.mid";
 var chunks = [];
 var PythonShell = require('python-shell');
 
+var admin = require("firebase-admin");
+
+var serviceAccount = require("../SherlockHums-c51073a5b67e.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://sherlockhums-25f4c.firebaseio.com"
+});
+
+var db = admin.database();
+var ref = db.ref("/");
+
+var gcloud = require("google-cloud");
+
+var storage = gcloud.storage({
+    projectId: "sherlockhums-25f4c",
+    keyFilename: "../SherlockHums-c51073a5b67e.json"
+});
+
+var bucket = storage.bucket("gs://sherlockhums-25f4c.appspot.com");
+
 module.exports = function(app, Music){
 
     // INITIAL TEXT
@@ -57,16 +78,10 @@ module.exports = function(app, Music){
 //            if (err) throw err;
 //            console.log('results : %j', results);
             console.log('Converting wav to mid is complete!');
+            
+            ref.child("game").update({mid: "neWWWWWWWWWWWW!"});
         });
 
-//        runScript('./amrToWav.js', function(err){
-//            if (err) throw err;
-//            console.log('Converting amr to wav is complete!');
-//            PythonShell.run('audio_to_midi_melodia.py', function(err, results){
-//                if (err) throw err;
-//                console.log('results : %j', results);
-//            });
-//        });
     });
 
 }

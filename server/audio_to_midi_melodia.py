@@ -83,7 +83,6 @@ def save_midi(outfile, notes, tempo):
 
 
 def midi_to_notes(midi, fs, hop, smooth, minduration):
-    notefile = open('izi.txt', 'w')
     # smooth midi pitch sequence first
     if (smooth > 0):
         filter_duration = smooth  # in seconds
@@ -123,13 +122,6 @@ def midi_to_notes(midi, fs, hop, smooth, minduration):
         duration_sec = duration * hop / float(fs)
         onset_sec = onset * hop / float(fs)
         notes.append((onset_sec, duration_sec, p_prev))
-
-    for i in notes:
-        s = ""
-        for j in range(len(i)):
-            s += str(i[j]) + ", "
-        notefile.write(s + "\n")
-    notefile.close()
 
     return notes
 
@@ -193,6 +185,6 @@ def audio_to_midi_melodia(infile, outfile, bpm, smooth=0.25, minduration=0.1,
 
     print("Conversion complete.")
 
-#audio_to_midi_melodia("./Recorded/recordedFile.wav", "./Recorded/recordedFile.mid", 60)
-audio_to_midi_melodia("../../music/izi.wav", "../../music/izi.mid", 70)
+
+audio_to_midi_melodia("./Recorded/recordedFile.wav", "./Recorded/recordedFile.mid", 60)
 

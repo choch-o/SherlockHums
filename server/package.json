@@ -12,6 +12,9 @@
     "body-parser": "^1.15.2",
     "cloudconvert": "^1.1.1",
     "express": "^4.14.0",
+    "firebase": "^3.6.4",
+    "firebase-admin": "^4.0.4",
+    "gcloud": "^0.37.0",
     "mongoose": "^4.7.6"
   }
 }
