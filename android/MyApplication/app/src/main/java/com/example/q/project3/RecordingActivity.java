@@ -143,7 +143,7 @@ public class RecordingActivity extends AppCompatActivity {
 
     void startRecording() {
         recorder.startRecording(outputFile);
-        new CountDownTimer(10000, 500) {
+        new CountDownTimer(1000, 500) {
             public void onTick(long millisUntilFinished) {
                 progressBar.incrementProgressBy(1);
             }
