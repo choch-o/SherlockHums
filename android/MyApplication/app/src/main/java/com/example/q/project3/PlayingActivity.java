@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,7 +34,7 @@ import java.util.Map;
 public class PlayingActivity extends Activity {
     /* Firebase setup */
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference().child("game");
 
     int RECORDER = 1;
     int currentRecorder = 1;
@@ -45,6 +49,8 @@ public class PlayingActivity extends Activity {
     TextView player3_message;
     TextView player4_message;
 
+    EditText answer_box;
+    Button submit_btn;
     /* Temp variables */
     boolean is_recorder = true;
 
@@ -56,21 +62,42 @@ public class PlayingActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playing);
 
+        GameData gameData = new GameData();
+        Map<String, Object> gameValues = gameData.toMap();
+        final Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("curr_recorder", currentRecorder);
+        childUpdates.put("curr_round", currentRound);
+        childUpdates.put("is_recording", true);
+
+        answer_box = (EditText) findViewById(R.id.answer_box);
+        submit_btn = (Button) findViewById(R.id.submit_btn);
+        answer_box.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    databaseReference.child("player1_message").setValue(answer_box.getText().toString());
+                    answer_box.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
+        submit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("player1_message").setValue(answer_box.getText().toString());
+                answer_box.setText("");
+            }
+        });
+
         player1_message = (TextView) findViewById(R.id.player1_message);
         player2_message = (TextView) findViewById(R.id.player2_message);
         player3_message = (TextView) findViewById(R.id.player3_message);
         player4_message = (TextView) findViewById(R.id.player4_message);
 
-        GameData gameData = new GameData();
-        Map<String, Object> gameValues = gameData.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("curr_recorder", currentRecorder);
-        childUpdates.put("curr_round", currentRound);
-        childUpdates.put("is_recording", true);
+        databaseReference.updateChildren(childUpdates);
 
-        databaseReference.child("game").updateChildren(childUpdates);
-
-        databaseReference.child("game").addChildEventListener(new ChildEventListener() {
+        databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
@@ -80,6 +107,23 @@ public class PlayingActivity extends Activity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 // GameData gameData = dataSnapshot.getValue(GameData.class);
                 String value = dataSnapshot.getValue(String.class);
+                switch (dataSnapshot.getKey()) {
+                    case "player1_message":
+                        player1_message.setText(value);
+                        break;
+                    case "player2_message":
+                        player2_message.setText(value);
+                        break;
+                    case "player3_message":
+                        player3_message.setText(value);
+                        break;
+                    case "player4_message":
+                        player4_message.setText(value);
+                        break;
+                    default:
+                        break;
+                }
+
                 Log.d("GAME DATA", "VALUE IS: " + value);
             }
 

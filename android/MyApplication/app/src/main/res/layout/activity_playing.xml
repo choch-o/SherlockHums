@@ -2,21 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="6"
     android:background="#ffffff">
-
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="1"
-        android:background="#ffffff"
-        android:maxLines="1" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/answer_box"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:background="#ffffff"
+            android:maxLines="1"
+            android:inputType="text"
+            android:imeOptions="actionDone" />
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_submit_btn"/>
+
+    </LinearLayout>
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnCount="2"
         android:rowCount="2"
-        android:layout_weight="4">
+        android:layout_weight="4" >
         <LinearLayout
             android:id="@+id/player1"
             android:layout_column="0"
@@ -43,7 +58,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical" >
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -51,13 +66,19 @@
                         android:layout_marginStart="5dp"
                         android:textColor="#ffffff"
                         android:text="Player Name"
-                        android:textSize="10dp"/>
+                        android:textSize="10dp" />
                     <TextView
                         android:id="@+id/player1_message"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
-                        android:background="@drawable/answer_box" />
+                        android:padding="5dp"
+                        android:textColor="#000000"
+                        android:textSize="8dp"
+                        android:maxWidth="50dp"
+                        android:inputType="textMultiLine"
+                        android:background="@drawable/answer_box"
+                        android:maxLines="3" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -116,6 +137,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
+                        android:textColor="#000000"
+                        android:textSize="8dp"
+                        android:maxWidth="50dp"
+                        android:inputType="textMultiLine"
                         android:background="@drawable/answer_box" />
                 </LinearLayout>
             </LinearLayout>
@@ -174,6 +199,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
+                        android:textColor="#000000"
+                        android:textSize="8dp"
+                        android:maxWidth="50dp"
+                        android:inputType="textMultiLine"
                         android:background="@drawable/answer_box" />
                 </LinearLayout>
             </LinearLayout>
@@ -232,6 +261,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
+                        android:textColor="#000000"
+                        android:textSize="8dp"
+                        android:maxWidth="50dp"
+                        android:inputType="textMultiLine"
                         android:background="@drawable/answer_box" />
                 </LinearLayout>
             </LinearLayout>
