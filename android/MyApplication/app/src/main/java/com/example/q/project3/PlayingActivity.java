@@ -259,7 +259,6 @@ public class PlayingActivity extends Activity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("is_recording", false);
-
     }
 
     void start_guessing() {
