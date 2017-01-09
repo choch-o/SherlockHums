@@ -16,19 +16,28 @@ public class AudioPlayer extends MediaPlayer {
 
     void startPlaying(String fileName) {
         mPlayer = new MediaPlayer();
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d("MP", "COMPLETED!!");
+                mp.release();
+                mp = null;
+            }
+        });
         try {
             mPlayer.setDataSource(fileName);
             mPlayer.prepare();
             mPlayer.start();
+
         } catch (IOException ioe) {
             Log.e("mPlayer", "Media player prepare() failed");
             ioe.printStackTrace();
         }
     }
-
+/*
     void stopPlaying() {
         mPlayer.release();
         mPlayer = null;
-    }
+    }*/
 
 }
