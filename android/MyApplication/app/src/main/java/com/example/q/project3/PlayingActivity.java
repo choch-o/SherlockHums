@@ -55,7 +55,6 @@ public class PlayingActivity extends Activity {
     int round = 0;
 
     String prevMIDIfile = "";
-    AudioPlayer player = new AudioPlayer();
 
     TextView player1_message;
     TextView player2_message;
@@ -148,8 +147,6 @@ public class PlayingActivity extends Activity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                // GameData gameData = dataSnapshot.getValue(GameData.class);
-
                 switch (dataSnapshot.getKey()) {
                     case "player1_message":
                         player1_message.setText(dataSnapshot.getValue(String.class));
