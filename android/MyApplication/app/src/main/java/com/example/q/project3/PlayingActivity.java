@@ -62,6 +62,8 @@ public class PlayingActivity extends Activity {
     Button submit_btn;
 
     String midiFile;
+
+    AudioPlayer player = new AudioPlayer();
     /* Temp variables */
     boolean is_recorder = true;
 
@@ -159,7 +161,7 @@ public class PlayingActivity extends Activity {
                         break;
                     case "mid":
                         midiFile = dataSnapshot.getValue(String.class);
-                        databaseReference.updateChildren(childUpdates);
+                        // databaseReference.updateChildren(childUpdates);
                         StorageReference midiRef = storageReference.child(midiFile);
                         Log.d("GHSLKJRFLASJJF", "ININININININININININ");
                         try {
@@ -167,9 +169,8 @@ public class PlayingActivity extends Activity {
                             midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    final AudioPlayer player = new AudioPlayer();
                                     player.startPlaying(midiFile.getAbsolutePath());
-                                    new CountDownTimer(10000, 500) {
+                                    new CountDownTimer(9500, 500) {
                                         public void onTick(long millisUntilFinished) {
                                         }
                                         public void onFinish() {
