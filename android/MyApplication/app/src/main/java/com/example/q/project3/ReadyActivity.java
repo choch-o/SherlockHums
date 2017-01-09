@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,52 +57,85 @@ public class ReadyActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                databaseReference.child("game").child("on_game").setValue(true);
                 Intent i = new Intent(ReadyActivity.this, PlayingActivity.class);
                 startActivity(i);
             }
         });
+        databaseReference.child ("game").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                switch (dataSnapshot.getKey()) {
+                    case "on_game":
+                        if (dataSnapshot.getValue(Boolean.class)) {
+                            Intent i = new Intent(ReadyActivity.this, PlayingActivity.class);
+                            startActivity(i);
+                        }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         databaseReference.child("user").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            String[] data;
-                            data = new String[4];
-                            data[0] = child.child("userId").getValue(String.class);
-                            data[1] = child.child("profileImageURL").getValue(String.class);
-                            data[2] = child.child("userName").getValue(String.class);
-                            if (child.child("score").getValue(Integer.class) == null) {
-                                data[3] = "0";
-                            } else {
-                                data[3] = Integer.toString(child.child("score").getValue(Integer.class));
-                            }
-                            ranks.add(data);
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        String[] data;
+                        data = new String[4];
+                        data[0] = child.child("userId").getValue(String.class);
+                        data[1] = child.child("profileImageURL").getValue(String.class);
+                        data[2] = child.child("userName").getValue(String.class);
+                        if (child.child("score").getValue(Integer.class) == null) {
+                            data[3] = "0";
+                        } else {
+                            data[3] = Integer.toString(child.child("score").getValue(Integer.class));
                         }
-                        Collections.sort(ranks, new Comparator<String[]>() {
-                            @Override
-                            public int compare(String[] o1, String[] o2) {
-                                return (Integer.parseInt(o2[3]) - Integer.parseInt(o1[3]));
-                            }
-                        });
-
-                        ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
-                        RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
-                        LV_ranking.setAdapter(rankingListViewAdapter);
-
-                        LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            }
-                        });
+                        ranks.add(data);
                     }
+                    Collections.sort(ranks, new Comparator<String[]>() {
+                        @Override
+                        public int compare(String[] o1, String[] o2) {
+                            return (Integer.parseInt(o2[3]) - Integer.parseInt(o1[3]));
+                        }
+                    });
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d("getUserList:onCancelled", databaseError.toString());
-                    }
-                });
+                    ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
+                    RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
+                    LV_ranking.setAdapter(rankingListViewAdapter);
+
+                    LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("getUserList:onCancelled", databaseError.toString());
+                }
+        });
     }
 
 }
