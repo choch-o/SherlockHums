@@ -67,8 +67,7 @@ module.exports = function(app, Music){
                 if (err) {
                     console.log("Can't upload recorded file! " + err);
                 } else {
-                    console.log("Upload of the recorded file is successful!");
-                    //console.log("Data : " + data);
+                    console.log("Uploading the recorded file to node.js server - Successful!");
                 }
             });
             res.send("Upload of the recorded file is successful!");
@@ -76,66 +75,34 @@ module.exports = function(app, Music){
         })
 
         PythonShell.run('audio_to_midi_melodia.py', function(err, results){
-//            if (err) throw err;
-//            console.log('results : %j', results);
-            console.log('Converting wav to mid is complete!');
+            console.log('Converting wav to mid - Complete!');
             
-//            bucket.upload(dirname + "/" + recordedFileMID, function(err, file) {
-//                if (err) {
-//                    console.log("Can't upload mid file to firebase storage! " + err);
-//                } else {
-//                    console.log('Uploading mid file to firebase storage is complete!');
-//                }
-//            });
-
             var recordedId = uuid.v1() + '.mid';
             postMIDfileToFirebase(recordedId, function(rId) {
                 ref.child("game").update({mid: rId});
+                console.log("firebase DB : modify mid path");
             });
+
 //            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
 //            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
 //            localReadStream.pipe(remoteWriteStream);
 //
 //            ref.child("game").update({mid: recordedId});
+
         });
 
     });
 
 }
 
-var childProcess = require('child_process');
-
-function runScript(scriptPath, callback) {
-
-    // keep track of whether callback has been invoked to prevent multiple invocations
-    var invoked = false;
-
-    var process = childProcess.fork(scriptPath);
-
-    // listen for errors as they may prevent the exit event from firing
-    process.on('error', function (err) {
-        if (invoked) return;
-        invoked = true;
-        callback(err);
-    });
-
-    // execute the callback once the process has finished running
-    process.on('exit', function (code) {
-        if (invoked) return;
-        invoked = true;
-        var err = code === 0 ? null : new Error('exit code ' + code);
-        callback(err);
-    });
-
-}
-
 function postMIDfileToFirebase(recordedId, callback) {
-//    var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
-//    var remoteWriteStream = bucket.file(recordedId).createWriteStream();
     var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
     var remoteWriteStream = getRemoteWriteStream(bucket, recordedId);
     localReadStream.pipe(remoteWriteStream);
-    remoteWriteStream.on('finish', function() {callback(recordedId)});
+    remoteWriteStream.on('finish', function() {
+        console.log("Posting mid to firebase storage - Complete!");
+        callback(recordedId);
+    });
 }
 
 function getLocalReadStream(fs, dirname, recordedFileMID) {
