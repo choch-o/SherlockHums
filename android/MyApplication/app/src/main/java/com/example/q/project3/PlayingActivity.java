@@ -56,7 +56,10 @@ public class PlayingActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playing);
 
-        player1_message = (TextView) findViewById(R.id.player1);
+        player1_message = (TextView) findViewById(R.id.player1_message);
+        player2_message = (TextView) findViewById(R.id.player2_message);
+        player3_message = (TextView) findViewById(R.id.player3_message);
+        player4_message = (TextView) findViewById(R.id.player4_message);
 
         GameData gameData = new GameData();
         Map<String, Object> gameValues = gameData.toMap();
