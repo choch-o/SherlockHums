@@ -2,6 +2,7 @@ package com.example.q.project3;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -52,6 +53,9 @@ public class PlayingActivity extends Activity {
     String currTitle;
     String currArtist;
     int round = 0;
+
+    String prevMIDIfile = "";
+    AudioPlayer player = new AudioPlayer();
 
     TextView player1_message;
     TextView player2_message;
@@ -159,32 +163,28 @@ public class PlayingActivity extends Activity {
                         break;
                     case "mid":
                         midiFile = dataSnapshot.getValue(String.class);
-                        databaseReference.updateChildren(childUpdates);
-                        StorageReference midiRef = storageReference.child(midiFile);
-                        Log.d("GHSLKJRFLASJJF", "ININININININININININ");
-                        try {
-                            final File midiFile = File.createTempFile("midiplay", "mid");
-                            midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    final AudioPlayer player = new AudioPlayer();
-                                    player.startPlaying(midiFile.getAbsolutePath());
-                                    new CountDownTimer(10000, 500) {
-                                        public void onTick(long millisUntilFinished) {
-                                        }
-                                        public void onFinish() {
-                                            player.stopPlaying();
-                                        }
-                                    }.start();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (midiFile != prevMIDIfile) {
+                            databaseReference.updateChildren(childUpdates);
+                            StorageReference midiRef = storageReference.child(midiFile);
+                            Log.d("GHSLKJRFLASJJF", "ININININININININININ");
+                            Log.d("MIDIFILEGGG", midiFile);
+                            try {
+                                final File midiFile = File.createTempFile("midiplay", "mid");
+                                midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        player.startPlaying(midiFile.getAbsolutePath());
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            prevMIDIfile = midiFile;
                         }
                         break;
                     case "is_recording":

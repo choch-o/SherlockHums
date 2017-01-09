@@ -119,7 +119,7 @@ public class RecordingActivity extends AppCompatActivity {
             recorder.stopRecording(outputFile);
         }
     }
-
+/*
     private void onPlay(boolean start) {
         if (start) {
             player.startPlaying(outputFile);
@@ -127,7 +127,7 @@ public class RecordingActivity extends AppCompatActivity {
             player.stopPlaying();
         }
     }
-
+*/
     @Override
     public void onPause() {
         super.onPause();
