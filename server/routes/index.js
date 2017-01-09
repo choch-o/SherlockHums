@@ -89,11 +89,14 @@ module.exports = function(app, Music){
 //            });
 
             var recordedId = uuid.v1() + '.mid';
-            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
-            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
-            localReadStream.pipe(remoteWriteStream);
-
-            ref.child("game").update({mid: recordedId});
+            postMIDfileToFirebase(recordedId, function(rId) {
+                ref.child("game").update({mid: rId});
+            });
+//            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
+//            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
+//            localReadStream.pipe(remoteWriteStream);
+//
+//            ref.child("game").update({mid: recordedId});
         });
 
     });
@@ -124,5 +127,22 @@ function runScript(scriptPath, callback) {
         callback(err);
     });
 
+}
+
+function postMIDfileToFirebase(recordedId, callback) {
+//    var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
+//    var remoteWriteStream = bucket.file(recordedId).createWriteStream();
+    var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
+    var remoteWriteStream = getRemoteWriteStream(bucket, recordedId);
+    localReadStream.pipe(remoteWriteStream);
+    remoteWriteStream.on('finish', function() {callback(recordedId)});
+}
+
+function getLocalReadStream(fs, dirname, recordedFileMID) {
+    return fs.createReadStream(dirname + '/' + recordedFileMID);
+}
+
+function getRemoteWriteStream(bucket, recordedId) {
+    return bucket.file(recordedId).createWriteStream();
 }
 
