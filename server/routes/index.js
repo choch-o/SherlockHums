@@ -70,46 +70,58 @@ module.exports = function(app, Music){
                     console.log("Uploading the recorded file to node.js server - Successful!");
                 }
             });
-            res.send("Upload of the recorded file is successful!");
-            res.end();
         })
 
         PythonShell.run('audio_to_midi_melodia.py', function(err, results){
             console.log('Converting wav to mid - Complete!');
             
             var recordedId = uuid.v1() + '.mid';
-            postMIDfileToFirebase(recordedId, function(rId) {
-                ref.child("game").update({mid: rId});
-                console.log("firebase DB : modify mid path");
+            console.log("uuid : " + recordedId);
+
+//            postMIDfileToFirebase(recordedId, function(rId) {
+//                ref.child("game").update({mid: rId});
+//                console.log("firebase DB : modify mid path (" + rId + ")");
+//            });
+
+            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
+            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
+            localReadStream.pipe(remoteWriteStream);
+            remoteWriteStream.on('finish', function() {
+                console.log("Posting mid to firebase storage - Complete!");
+//                ref.child("midi").child("midi_path").set(recordedId, function(error) {
+//                ref.child("midi").update({midi_path: recordedId}, function(error) {
+//                ref.child("game").update({mid: recordedId}, function(error) {
+//                    if (error) {
+//                        console.log("Data could not be saved. " + error);
+//                    } else {
+//                        console.log("firebase DB : modify mid path (" + recordedId + ")");
+//                    }
+//                });
+                
+                res.send(recordedId);
+                res.end();
             });
-
-//            var localReadStream = fs.createReadStream(dirname + '/' + recordedFileMID);
-//            var remoteWriteStream = bucket.file(recordedId).createWriteStream();
-//            localReadStream.pipe(remoteWriteStream);
-//
-//            ref.child("game").update({mid: recordedId});
-
         });
 
     });
 
 }
 
-function postMIDfileToFirebase(recordedId, callback) {
-    var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
-    var remoteWriteStream = getRemoteWriteStream(bucket, recordedId);
-    localReadStream.pipe(remoteWriteStream);
-    remoteWriteStream.on('finish', function() {
-        console.log("Posting mid to firebase storage - Complete!");
-        callback(recordedId);
-    });
-}
-
-function getLocalReadStream(fs, dirname, recordedFileMID) {
-    return fs.createReadStream(dirname + '/' + recordedFileMID);
-}
-
-function getRemoteWriteStream(bucket, recordedId) {
-    return bucket.file(recordedId).createWriteStream();
-}
-
+//function postMIDfileToFirebase(recordedId, callback) {
+//    var localReadStream = getLocalReadStream(fs, dirname, recordedFileMID);
+//    var remoteWriteStream = getRemoteWriteStream(bucket, recordedId);
+//    localReadStream.pipe(remoteWriteStream);
+//    remoteWriteStream.on('finish', function() {
+//        console.log("Posting mid to firebase storage - Complete!");
+//        callback(recordedId);
+//    });
+//}
+//
+//function getLocalReadStream(fs, dirname, recordedFileMID) {
+//    return fs.createReadStream(dirname + '/' + recordedFileMID);
+//}
+//
+//function getRemoteWriteStream(bucket, recordedId) {
+//    return bucket.file(recordedId).createWriteStream();
+//}
+//
