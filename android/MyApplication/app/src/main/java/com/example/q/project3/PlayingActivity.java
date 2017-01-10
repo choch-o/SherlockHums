@@ -472,7 +472,7 @@ public class PlayingActivity extends Activity {
     }
 
     void nextRound() {
-        if (currentRecorder == myIndex && currentRound < 4) {
+        if (currentRecorder == myIndex) {
             Intent i = new Intent(this, RecordingActivity.class);
             i.putExtra("title", song_titles[currentRound - 1]);
             i.putExtra("artist", song_artists[currentRound - 1]);
@@ -545,14 +545,15 @@ public class PlayingActivity extends Activity {
                 mPlayer.stop();
                 final Map<String, Object> childUpdates = new HashMap<>();
                 if (currentRecorder > 3) {
-                    // currentRecorder = 1;
-                    finishGame();
+                    currentRecorder = 1;
+                    // finishGame();
                 } else {
                     currentRecorder++;
                 }
                 childUpdates.put("curr_recorder", currentRecorder);
                 if (currentRound > 3) {
-                    finishGame();
+                    currentRound = 1;
+                    // finishGame();
                 } else {
                     currentRound++;
                 }
@@ -560,7 +561,11 @@ public class PlayingActivity extends Activity {
                 databaseReference.child("game").updateChildren(childUpdates);
                 currTitle = song_titles[currentRound - 1];
                 currArtist = song_artists[currentRound - 1];
-                nextRound();
+                if (currentRound != 1) {
+                    nextRound();
+                } else {
+                    finishGame();
+                }
             }
         }.start();
     }
