@@ -52,27 +52,6 @@ public class ReadyActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ready);
 
-//        databaseReference.child("song").child("1").child("title").setValue("보고싶다");
-//        databaseReference.child("song").child("1").child("artist").setValue("김범수");
-//        databaseReference.child("song").child("2").child("title").setValue("나 항상 그대를");
-//        databaseReference.child("song").child("2").child("artist").setValue("이선희");
-//        databaseReference.child("song").child("3").child("title").setValue("Tell me");
-//        databaseReference.child("song").child("3").child("artist").setValue("원더걸스");
-//        databaseReference.child("song").child("4").child("title").setValue("Gee");
-//        databaseReference.child("song").child("4").child("artist").setValue("소녀시대");
-//        databaseReference.child("song").child("5").child("title").setValue("Isn't she lovely");
-//        databaseReference.child("song").child("5").child("artist").setValue("Stevie Wonder");
-//        databaseReference.child("song").child("6").child("title").setValue("무조건");
-//        databaseReference.child("song").child("6").child("artist").setValue("박상철");
-//        databaseReference.child("song").child("7").child("title").setValue("거짓말");
-//        databaseReference.child("song").child("7").child("artist").setValue("빅뱅");
-//        databaseReference.child("song").child("8").child("title").setValue("이별택시");
-//        databaseReference.child("song").child("8").child("artist").setValue("김연우");
-//        databaseReference.child("song").child("9").child("title").setValue("귀로");
-//        databaseReference.child("song").child("9").child("artist").setValue("나얼");
-//        databaseReference.child("song").child("10").child("title").setValue("애인있어요");
-//        databaseReference.child("song").child("10").child("artist").setValue("이은미");
-
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (this.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
