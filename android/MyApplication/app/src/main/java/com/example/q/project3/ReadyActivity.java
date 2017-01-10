@@ -147,6 +147,7 @@ public class ReadyActivity extends AppCompatActivity {
             new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    ranks = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         String[] data;
                         data = new String[4];
