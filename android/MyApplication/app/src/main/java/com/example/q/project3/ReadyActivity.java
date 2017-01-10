@@ -33,6 +33,7 @@ public class ReadyActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 2;
     private static final int PERMISSIONS_REQUEST_INTERNET = 3;
 
+    boolean is_recorder = false;
     ArrayList<String[]> ranks = new ArrayList<>();
 
     @Override
@@ -57,8 +58,11 @@ public class ReadyActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                is_recorder = true;
                 databaseReference.child("game").child("on_game").setValue(true);
-                Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
+                Intent i = new Intent(getApplicationContext(), RecordingActivity.class);
+                i.putExtra("title", "보고싶다");
+                i.putExtra("artist", "김범수");
                 startActivity(i);
             }
         });
@@ -73,8 +77,9 @@ public class ReadyActivity extends AppCompatActivity {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 switch (dataSnapshot.getKey()) {
                     case "on_game":
-                        if (dataSnapshot.getValue(Boolean.class)) {
+                        if (dataSnapshot.getValue(Boolean.class) && !is_recorder) {
                             Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
+                            i.putExtra("midi_path", "");
                             startActivity(i);
                         }
                 }

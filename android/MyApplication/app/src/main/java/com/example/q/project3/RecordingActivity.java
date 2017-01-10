@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -65,8 +66,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         recordButton = (ImageButton) findViewById(R.id.record_button);
         playButton = (ImageButton) findViewById(R.id.play_button);
-        searchButton = (ImageButton) findViewById(R.id.search_button);
-        */
+        searchButton = (ImageButton) findViewById(R.id.search_button);*/
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.amr";
 /*
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +110,7 @@ public class RecordingActivity extends AppCompatActivity {
         });
         */
     }
-
+/*
     private void onRecord(boolean start) {
         if (start) {
             recorder.startRecording(outputFile);
@@ -119,7 +119,7 @@ public class RecordingActivity extends AppCompatActivity {
             recorder.stopRecording(outputFile);
         }
     }
-/*
+
     private void onPlay(boolean start) {
         if (start) {
             player.startPlaying(outputFile);
@@ -127,7 +127,7 @@ public class RecordingActivity extends AppCompatActivity {
             player.stopPlaying();
         }
     }
-*/
+
     @Override
     public void onPause() {
         super.onPause();
@@ -140,7 +140,7 @@ public class RecordingActivity extends AppCompatActivity {
             player = null;
         }
     }
-
+*/
     void startRecording() {
         recorder.startRecording(outputFile);
         new CountDownTimer(10000, 500) {
@@ -149,8 +149,12 @@ public class RecordingActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 recorder.stopRecording(outputFile);
-                recorder.upload(outputFile);
-                finish();
+                String midi_path = recorder.upload(outputFile);
+                Log.d("RECORDING_MIDIPATH", midi_path);
+                Intent i = new Intent(RecordingActivity.this, PlayingActivity.class);
+                i.putExtra("midi_path", midi_path);
+                i.putExtra("is_recorder", true);
+                startActivity(i);
             }
         }.start();
     }

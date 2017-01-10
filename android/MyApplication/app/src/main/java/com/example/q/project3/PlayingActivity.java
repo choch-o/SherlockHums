@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONArray;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +51,7 @@ import java.util.concurrent.ExecutionException;
 public class PlayingActivity extends Activity {
     /* Firebase setup */
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference = firebaseDatabase.getReference().child("game");
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://sherlockhums-25f4c.appspot.com");
 
@@ -90,7 +92,7 @@ public class PlayingActivity extends Activity {
     String midiFile;
 
     int myIndex;
-
+    boolean is_recorder;
     // AudioPlayer player = new AudioPlayer();
 
     @Override
@@ -100,6 +102,10 @@ public class PlayingActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_playing);
+
+        Intent i = getIntent();
+        midiFile = i.getStringExtra("midi_path");
+        is_recorder = i.getBooleanExtra("is_recorder", false);
 
         GameData gameData = new GameData();
         Map<String, Object> gameValues = gameData.toMap();
@@ -146,9 +152,87 @@ public class PlayingActivity extends Activity {
         iv_player3_image = (ImageView) findViewById(R.id.player3_profile);
         iv_player4_image = (ImageView) findViewById(R.id.player4_profile);
 
-        databaseReference.updateChildren(childUpdates);
+        databaseReference.child("midi").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("ADDADDHEREHERE", dataSnapshot.getKey());
+                switch(dataSnapshot.getKey()) {
+                    case "midi_path":
+                        if (is_recorder) {
+                            String midi_path = dataSnapshot.getValue(String.class);
+                            Log.d("ADDADDMIDIMIDIHHHHHH", midi_path);
+                            StorageReference midiRef = storageReference.child(midi_path);
+                            try {
+                                final File midiFile = File.createTempFile("midiplay", "mid");
+                                midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        Log.d("FILE DOWNLOAD", "SUCCESS");
+                                        playMIDI(midiFile.getAbsolutePath());
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("FILE DOWNLOAD", "FAILURE");
+                                        e.printStackTrace();
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        break;
+                }
+            }
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("HEREHERE", dataSnapshot.getKey());
+                switch(dataSnapshot.getKey()) {
+                    case "midi_path":
+                        String midi_path = dataSnapshot.getValue(String.class);
+                        Log.d("MIDIMIDIMIDIPATHHHHHHH", midi_path);
+                        StorageReference midiRef = storageReference.child(midi_path);
+                        try {
+                            final File midiFile = File.createTempFile("midiplay", "mid");
+                            midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    Log.d("FILE DOWNLOAD", "SUCCESS");
+                                    playMIDI(midiFile.getAbsolutePath());
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("FILE DOWNLOAD", "FAILURE");
+                                    e.printStackTrace();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference.child("game").updateChildren(childUpdates);
+
+        databaseReference.child("game").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("ININININ", "SINGLE VALUE EVENT DATA CHANGE");
@@ -231,7 +315,7 @@ public class PlayingActivity extends Activity {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                startRound();
+//                startRound();
 
             }
 
@@ -241,7 +325,7 @@ public class PlayingActivity extends Activity {
             }
         });
 
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        databaseReference.child("game").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             }
@@ -261,49 +345,10 @@ public class PlayingActivity extends Activity {
                     case "player4_message":
                         player4_message.setText(dataSnapshot.getValue(String.class));
                         break;
-                    case "mid":
-                        midiFile = dataSnapshot.getValue(String.class);
-//                        midiFiel =
-
-                        if (midiFile != prevMIDIfile) {
-                            Log.d("MIDIFILE MIDIMIDI", midiFile);
-                            Log.d("PREV MIDI FILE", prevMIDIfile);
-                            StorageReference midiRef = storageReference.child(midiFile);
-                            Log.d("GHSLKJRFLASJJF", "ININININININININININ");
-                            Log.d("MIDIFILEGGG", midiFile);
-                            try {
-                                final File midiFile = File.createTempFile("midiplay", "mid");
-                                midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                        final AudioPlayer player = new AudioPlayer();
-                                        player.startPlaying(midiFile.getAbsolutePath());
-                                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                            @Override
-                                            public void onCompletion(MediaPlayer mp) {
-                                                Log.d("COMPLETE", "DONEDONEDONE");
-                                                mp.release();
-                                                mp = null;
-                                                player.release();
-                                                // player = null;
-                                            }
-                                        });
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            prevMIDIfile = midiFile;
-                        }
-                        break;
                     case "is_recording":
-                        if (dataSnapshot.getValue(Boolean.class)) {}
+                        if (dataSnapshot.getValue(Boolean.class)) {
+
+                        }
                         else {
                             start_guessing();
                         }
@@ -333,8 +378,9 @@ public class PlayingActivity extends Activity {
             }
         });
 
-
-
+        if (!midiFile.equals("")) {
+            databaseReference.child("midi").child("midi_path").setValue(midiFile);
+        }
     }
 
     private void startRound() {
@@ -348,13 +394,14 @@ public class PlayingActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        /*
         if (is_recorder()) {
             Intent i = new Intent(PlayingActivity.this, RecordingActivity.class);
             i.putExtra("title", currTitle);
             i.putExtra("artist", currArtist);
             startActivityForResult(i, RECORDER);
         }
+        */
     }
 
     @Override
@@ -384,5 +431,41 @@ public class PlayingActivity extends Activity {
             e.printStackTrace();
         }
         return result;
+    }
+
+    void playMIDI(final String midiPath) {
+        final MediaPlayer mPlayer = new MediaPlayer();
+        final MediaPlayer mPlayer2 = new MediaPlayer();
+        try {
+            mPlayer.setDataSource(midiPath);
+            mPlayer.prepare();
+            mPlayer.start();
+            Log.d("MPLAYER", "STARTED");
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    Log.d("MPLAYER", "STOPPED");
+                    mp.stop();
+                    mp.release();
+                    try {
+                        mPlayer2.setDataSource(midiPath);
+                        mPlayer2.prepare();
+                        mPlayer2.start();
+                        mPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp2) {
+                                Log.d("MPLAYER2", "STOPPED");
+                                mp2.stop();
+                                mp2.release();
+                            }
+                        });
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+            });
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 }
