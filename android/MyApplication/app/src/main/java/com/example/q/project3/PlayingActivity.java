@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -94,6 +95,7 @@ public class PlayingActivity extends Activity {
     int myIndex;
     boolean is_recorder;
     // AudioPlayer player = new AudioPlayer();
+    MediaPlayer mPlayer = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +122,7 @@ public class PlayingActivity extends Activity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    databaseReference.child("player" + Integer.toString(myIndex) + "_message")
+                    databaseReference.child("game").child("player" + Integer.toString(myIndex) + "_message")
                             .setValue(answer_box.getText().toString());
                     answer_box.setText("");
                     return true;
@@ -131,7 +133,7 @@ public class PlayingActivity extends Activity {
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                databaseReference.child("player" + Integer.toString(myIndex) + "_message")
+                databaseReference.child("game").child("player" + Integer.toString(myIndex) + "_message")
                         .setValue(answer_box.getText().toString());
                 answer_box.setText("");
             }
@@ -168,7 +170,7 @@ public class PlayingActivity extends Activity {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                         Log.d("FILE DOWNLOAD", "SUCCESS");
-                                        playMIDI(midiFile.getAbsolutePath());
+                                        startRound(midiFile.getAbsolutePath());
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -199,7 +201,7 @@ public class PlayingActivity extends Activity {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                     Log.d("FILE DOWNLOAD", "SUCCESS");
-                                    playMIDI(midiFile.getAbsolutePath());
+                                    startRound(midiFile.getAbsolutePath());
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -315,8 +317,6 @@ public class PlayingActivity extends Activity {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-//                startRound();
-
             }
 
             @Override
@@ -344,14 +344,6 @@ public class PlayingActivity extends Activity {
                         break;
                     case "player4_message":
                         player4_message.setText(dataSnapshot.getValue(String.class));
-                        break;
-                    case "is_recording":
-                        if (dataSnapshot.getValue(Boolean.class)) {
-
-                        }
-                        else {
-                            start_guessing();
-                        }
                         break;
                     case "curr_recorder":
                         currentRecorder = dataSnapshot.getValue(Integer.class);
@@ -383,7 +375,7 @@ public class PlayingActivity extends Activity {
         }
     }
 
-    private void startRound() {
+    private void startRound(String midi_path) {
         int id = getResources().getIdentifier("player" + currentRecorder, "id", getPackageName());
         LinearLayout recorder = (LinearLayout) findViewById(id);
         recorder.setBackgroundColor(getResources().getColor(R.color.colorRecorder));
@@ -394,14 +386,7 @@ public class PlayingActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-        if (is_recorder()) {
-            Intent i = new Intent(PlayingActivity.this, RecordingActivity.class);
-            i.putExtra("title", currTitle);
-            i.putExtra("artist", currArtist);
-            startActivityForResult(i, RECORDER);
-        }
-        */
+        playMIDI(midi_path);
     }
 
     @Override
@@ -434,9 +419,8 @@ public class PlayingActivity extends Activity {
     }
 
     void playMIDI(final String midiPath) {
-        final MediaPlayer mPlayer = new MediaPlayer();
-        final MediaPlayer mPlayer2 = new MediaPlayer();
         try {
+            mPlayer.reset();
             mPlayer.setDataSource(midiPath);
             mPlayer.prepare();
             mPlayer.start();
@@ -445,18 +429,17 @@ public class PlayingActivity extends Activity {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     Log.d("MPLAYER", "STOPPED");
+                    Toast.makeText(PlayingActivity.this, "REPLAY", Toast.LENGTH_LONG);
                     mp.stop();
-                    mp.release();
                     try {
-                        mPlayer2.setDataSource(midiPath);
-                        mPlayer2.prepare();
-                        mPlayer2.start();
-                        mPlayer2.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        mPlayer.prepare();
+                        mPlayer.start();
+                        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp2) {
                                 Log.d("MPLAYER2", "STOPPED");
                                 mp2.stop();
-                                mp2.release();
+                                // mp2.release();
                             }
                         });
                     } catch (IOException ioe) {

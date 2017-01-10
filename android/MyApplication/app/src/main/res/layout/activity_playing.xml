@@ -47,7 +47,7 @@
                     android:layout_margin="5dp"
                     android:padding="5dp"
                     android:textColor="#000000"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
                     android:maxWidth="50dp"
                     android:inputType="textMultiLine"
                     android:background="@drawable/answer_box"
@@ -92,7 +92,8 @@
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:textColor="#000000"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
+                    android:padding="5dp"
                     android:maxWidth="50dp"
                     android:inputType="textMultiLine"
                     android:background="@drawable/answer_box" />
@@ -135,7 +136,8 @@
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
                     android:textColor="#000000"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
+                    android:padding="5dp"
                     android:maxWidth="50dp"
                     android:inputType="textMultiLine"
                     android:background="@drawable/answer_box" />
@@ -179,6 +181,7 @@
                     android:layout_margin="5dp"
                     android:textColor="#000000"
                     android:textSize="10dp"
+                    android:padding="5dp"
                     android:maxWidth="50dp"
                     android:inputType="textMultiLine"
                     android:background="@drawable/answer_box" />
@@ -192,7 +195,7 @@
         <EditText
             android:id="@+id/answer_box"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:padding="10dp"
             android:background="#ffffff"
