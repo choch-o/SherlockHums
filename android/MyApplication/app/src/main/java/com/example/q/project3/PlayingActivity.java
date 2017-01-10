@@ -472,7 +472,7 @@ public class PlayingActivity extends Activity {
     }
 
     void nextRound() {
-        if (currentRecorder == myIndex) {
+        if (currentRecorder == myIndex && currentRound < 4) {
             Intent i = new Intent(this, RecordingActivity.class);
             i.putExtra("title", song_titles[currentRound - 1]);
             i.putExtra("artist", song_artists[currentRound - 1]);
