@@ -41,7 +41,6 @@ public class FacebookLoginActivity extends AppCompatActivity {
                 GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        //Log.d("result", "************************************** " + object.toString());
                         try {
                             String userId = object.getString("id");
                             String userName = object.getString("name");

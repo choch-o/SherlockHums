@@ -233,7 +233,7 @@ public class WavRecorder {
         out.write(header, 0, 44);
     }
 
-    public void upload(String outputFile) {
+    public String upload(String outputFile) {
         String response=null;
         AudioSender sender=new AudioSender(outputFile);
         FutureTask<String> uploadTask=new FutureTask<String>(sender);
@@ -248,8 +248,10 @@ public class WavRecorder {
                     e.printStackTrace();
                     Log.e("Upload","Exception",e.getCause());
                 }
+
             }
         }
+        return response;
     }
 
 }

@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -57,88 +58,8 @@ public class RecordingActivity extends AppCompatActivity {
             }
         }.start();
 
-        /*
-        recordStatus.setText("Start recording");
-
-        final TextView playStatus = (TextView) findViewById(R.id.play_status);
-        playStatus.setText("Start playing");
-
-        recordButton = (ImageButton) findViewById(R.id.record_button);
-        playButton = (ImageButton) findViewById(R.id.play_button);
-        searchButton = (ImageButton) findViewById(R.id.search_button);
-        */
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.amr";
-/*
-        recordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                onRecord(recorder.mStartRecording);
-                if (recorder.mStartRecording) {
-                    recordStatus.setText("Stop recording");
-                    recordButton.setImageResource(R.drawable.stop_button);
-                } else {
-                    recordStatus.setText("Start recording");
-                    recordButton.setImageResource(R.drawable.record_button);
-                }
-                recorder.mStartRecording = !recorder.mStartRecording;
-
-            }
-        });
-        */
-/*
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPlay(player.mStartPlaying);
-                if (player.mStartPlaying) {
-                    playStatus.setText("Stop playing");
-                    playButton.setImageResource(R.drawable.stop_button);
-                } else {
-                    playStatus.setText("Start playing");
-                    playButton.setImageResource(R.drawable.play_button);
-                }
-                player.mStartPlaying = !player.mStartPlaying;
-            }
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recorder.upload(outputFile);
-            }
-        });
-        */
-    }
-
-    private void onRecord(boolean start) {
-        if (start) {
-            recorder.startRecording(outputFile);
-
-        } else {
-            recorder.stopRecording(outputFile);
-        }
-    }
-/*
-    private void onPlay(boolean start) {
-        if (start) {
-            player.startPlaying(outputFile);
-        } else {
-            player.stopPlaying();
-        }
-    }
-*/
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (recorder != null) {
-            // recorder.release();
-            recorder = null;
-        }
-        if (player != null) {
-            player.release();
-            player = null;
-        }
     }
 
     void startRecording() {
@@ -149,8 +70,12 @@ public class RecordingActivity extends AppCompatActivity {
             }
             public void onFinish() {
                 recorder.stopRecording(outputFile);
-                recorder.upload(outputFile);
-                finish();
+                String midi_path = recorder.upload(outputFile);
+                Log.d("RECORDING_MIDIPATH", midi_path);
+                Intent i = new Intent(RecordingActivity.this, PlayingActivity.class);
+                i.putExtra("midi_path", midi_path);
+                i.putExtra("is_recorder", true);
+                startActivity(i);
             }
         }.start();
     }
