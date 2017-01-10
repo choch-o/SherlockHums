@@ -206,18 +206,13 @@ public class ReadyActivity extends AppCompatActivity {
     }
 
     public ArrayList<Integer> getSongsIndex() {
-        
         ArrayList<Integer> songsIndex = new ArrayList<>();
-        final Random random = new Random();
-        final Set<Integer> intSet = new HashSet<>();
-        while (intSet.size() < 4) {
+        Random random = new Random();
+        while (songsIndex.size() < 4) {
             int r = random.nextInt(10);
-            Log.d("RRRRRRRR", "%%%%%%%%%%%%%%%%%" + Integer.toString(r));
-            intSet.add(r);
-        }
-        final Iterator<Integer> iterator = intSet.iterator();
-        for (int i = 0; iterator.hasNext(); ++i) {
-            songsIndex.add(iterator.next());
+            if (!songsIndex.contains(r)) {
+                songsIndex.add(r);
+            }
         }
         return songsIndex;
     }
