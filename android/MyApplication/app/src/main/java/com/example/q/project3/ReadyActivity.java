@@ -96,8 +96,8 @@ public class ReadyActivity extends AppCompatActivity {
                 is_recorder = true;
                 databaseReference.child("game").child("on_game").setValue(true);
                 Intent i = new Intent(getApplicationContext(), RecordingActivity.class);
-                i.putExtra("title", "보고싶다");
-                i.putExtra("artist", "김범수");
+                i.putExtra("title", songs.get(songIndex.get(0))[0]);
+                i.putExtra("artist", songs.get(songIndex.get(0))[1]);
                 startActivity(i);
             }
         });
@@ -115,8 +115,6 @@ public class ReadyActivity extends AppCompatActivity {
                         if (dataSnapshot.getValue(Boolean.class) && !is_recorder) {
                             Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
                             i.putExtra("midi_path", "");
-                            i.putExtra("title", "보고싶다");
-                            i.putExtra("artist", "김범수");
                             startActivity(i);
                         }
                 }
@@ -208,9 +206,9 @@ public class ReadyActivity extends AppCompatActivity {
         while (intSet.size() < 4) {
             intSet.add(random.nextInt(10));
         }
-        final Iterator<Integer> iter = intSet.iterator();
-        for (int i = 0; iter.hasNext(); ++i) {
-            songsIndex.add(iter.next());
+        final Iterator<Integer> iterator = intSet.iterator();
+        for (int i = 0; iterator.hasNext(); ++i) {
+            songsIndex.add(iterator.next());
         }
         return songsIndex;
     }
