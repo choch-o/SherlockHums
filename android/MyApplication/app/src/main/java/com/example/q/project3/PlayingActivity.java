@@ -91,7 +91,7 @@ public class PlayingActivity extends Activity {
 
     int myIndex;
 
-    AudioPlayer player = new AudioPlayer();
+    // AudioPlayer player = new AudioPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,8 +263,11 @@ public class PlayingActivity extends Activity {
                         break;
                     case "mid":
                         midiFile = dataSnapshot.getValue(String.class);
+//                        midiFiel =
+
                         if (midiFile != prevMIDIfile) {
-                            databaseReference.updateChildren(childUpdates);
+                            Log.d("MIDIFILE MIDIMIDI", midiFile);
+                            Log.d("PREV MIDI FILE", prevMIDIfile);
                             StorageReference midiRef = storageReference.child(midiFile);
                             Log.d("GHSLKJRFLASJJF", "ININININININININININ");
                             Log.d("MIDIFILEGGG", midiFile);
@@ -273,25 +276,19 @@ public class PlayingActivity extends Activity {
                                 midiRef.getFile(midiFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                        final AudioPlayer player = new AudioPlayer();
                                         player.startPlaying(midiFile.getAbsolutePath());
                                         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                             @Override
                                             public void onCompletion(MediaPlayer mp) {
-                                                Log.d("MP", "COMPLETED!!");
+                                                Log.d("COMPLETE", "DONEDONEDONE");
                                                 mp.release();
                                                 mp = null;
-                                                AudioPlayer secondPlayer = new AudioPlayer();
-                                                secondPlayer.startPlaying(midiFile.getAbsolutePath());
-                                                secondPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                                    @Override
-                                                    public void onCompletion(MediaPlayer mp) {
-                                                        Log.d("MP", "COMPLETED!!");
-                                                        mp.release();
-                                                        mp = null;
-                                                    }
-                                                });
+                                                player.release();
+                                                // player = null;
                                             }
                                         });
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
