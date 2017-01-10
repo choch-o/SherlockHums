@@ -24,9 +24,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -138,7 +143,7 @@ public class PlayingActivity extends Activity {
                     case "midi_path":
                         if (is_recorder) {
                             String midi_path = dataSnapshot.getValue(String.class);
-                            Log.d("ADDADDMIDIMIDIHHHHHH", midi_path);
+                            Log.d("ADDDDDMIDIMIDIMHHH", midi_path);
                             StorageReference midiRef = storageReference.child(midi_path);
                             try {
                                 final File midiFile = File.createTempFile("midiplay", "mid");
@@ -286,19 +291,15 @@ public class PlayingActivity extends Activity {
                             break;
                         case "player1_point":
                             player_points[0] = child.getValue(Integer.class);
-                            onCorrectAnswer(0);
                             break;
                         case "player2_point":
                             player_points[1] = child.getValue(Integer.class);
-                            onCorrectAnswer(1);
                             break;
                         case "player3_point":
                             player_points[2] = child.getValue(Integer.class);
-                            onCorrectAnswer(2);
                             break;
                         case "player4_point":
                             player_points[3] = child.getValue(Integer.class);
-                            onCorrectAnswer(3);
                             break;
                     }
                 }
@@ -333,6 +334,22 @@ public class PlayingActivity extends Activity {
                         break;
                     case "curr_recorder":
                         currentRecorder = dataSnapshot.getValue(Integer.class);
+                        break;
+                    case "player1_point":
+                        player_points[0] = dataSnapshot.getValue(Integer.class);
+                        onCorrectAnswer(0);
+                        break;
+                    case "player2_point":
+                        player_points[1] = dataSnapshot.getValue(Integer.class);
+                        onCorrectAnswer(1);
+                        break;
+                    case "player3_point":
+                        player_points[2] = dataSnapshot.getValue(Integer.class);
+                        onCorrectAnswer(2);
+                        break;
+                    case "player4_point":
+                        player_points[3] = dataSnapshot.getValue(Integer.class);
+                        onCorrectAnswer(3);
                         break;
                     default:
                         break;
@@ -404,13 +421,7 @@ public class PlayingActivity extends Activity {
         int id = getResources().getIdentifier("player" + currentRecorder, "id", getPackageName());
         LinearLayout recorder = (LinearLayout) findViewById(id);
         recorder.setBackgroundColor(getResources().getColor(R.color.colorRecorder));
-        try {
-            Log.d("JSON Obj 0", tempSongs.getJSONObject(round).toString());
-            currTitle = tempSongs.getJSONObject(round).getString("title");
-            currArtist = tempSongs.getJSONObject(round).getString("artist");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         playMIDI(midi_path);
     }
 
@@ -420,10 +431,6 @@ public class PlayingActivity extends Activity {
 
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("is_recording", false);
-    }
-
-    void start_guessing() {
-
     }
 
     boolean is_recorder() {

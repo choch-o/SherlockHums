@@ -89,9 +89,15 @@ public class ReadyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<Integer> songIndex = getSongsIndex();
                 for(int i = 1; i < 5; i++) {
+                    Log.d("RANDOM", Integer.toString(songIndex.get(i - 1)));
                     databaseReference.child("game").child("song" + Integer.toString(i) + "_title").setValue(songs.get(songIndex.get(i - 1))[0]);
                     databaseReference.child("game").child("song" + Integer.toString(i) + "_artist").setValue(songs.get(songIndex.get(i - 1))[1]);
                 }
+
+                databaseReference.child("game").child("player1_point").setValue(0);
+                databaseReference.child("game").child("player2_point").setValue(0);
+                databaseReference.child("game").child("player3_point").setValue(0);
+                databaseReference.child("game").child("player4_point").setValue(0);
 
                 is_recorder = true;
                 databaseReference.child("game").child("on_game").setValue(true);
@@ -200,11 +206,14 @@ public class ReadyActivity extends AppCompatActivity {
     }
 
     public ArrayList<Integer> getSongsIndex() {
+        
         ArrayList<Integer> songsIndex = new ArrayList<>();
         final Random random = new Random();
         final Set<Integer> intSet = new HashSet<>();
         while (intSet.size() < 4) {
-            intSet.add(random.nextInt(10));
+            int r = random.nextInt(10);
+            Log.d("RRRRRRRR", "%%%%%%%%%%%%%%%%%" + Integer.toString(r));
+            intSet.add(r);
         }
         final Iterator<Integer> iterator = intSet.iterator();
         for (int i = 0; iterator.hasNext(); ++i) {
