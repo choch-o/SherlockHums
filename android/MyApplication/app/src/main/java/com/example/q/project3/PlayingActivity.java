@@ -56,6 +56,8 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class PlayingActivity extends Activity {
+    final int NEXT_ROUND_REQUEST = 1;
+
     /* Firebase setup */
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
@@ -89,6 +91,9 @@ public class PlayingActivity extends Activity {
     String[] player_image_urls = new String[4];
     Integer[] player_points = new Integer[4];
     TextView[] player_messages = new TextView[4];
+    String[] song_titles = new String[4];
+    String[] song_artists = new String[4];
+    TextView[] tv_player_points = new TextView[4];
 
     EditText answer_box;
     Button submit_btn;
@@ -135,6 +140,15 @@ public class PlayingActivity extends Activity {
         iv_player3_image = (ImageView) findViewById(R.id.player3_profile);
         iv_player4_image = (ImageView) findViewById(R.id.player4_profile);
 
+        tv_player_points[0] = (TextView) findViewById(R.id.player1_point);
+        tv_player_points[1] = (TextView) findViewById(R.id.player2_point);
+        tv_player_points[2] = (TextView) findViewById(R.id.player3_point);
+        tv_player_points[3] = (TextView) findViewById(R.id.player4_point);
+        tv_player_points[0].setText("0");
+        tv_player_points[1].setText("0");
+        tv_player_points[2].setText("0");
+        tv_player_points[3].setText("0");
+
         databaseReference.child("midi").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -163,6 +177,8 @@ public class PlayingActivity extends Activity {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                        } else {
+                            Log.d("WHYHEHHDK", "DSJLKFHDS");
                         }
                         break;
                 }
@@ -301,6 +317,30 @@ public class PlayingActivity extends Activity {
                         case "player4_point":
                             player_points[3] = child.getValue(Integer.class);
                             break;
+                        case "song1_title":
+                            song_titles[0] = child.getValue(String.class);
+                            break;
+                        case "song2_title":
+                            song_titles[1] = child.getValue(String.class);
+                            break;
+                        case "song3_title":
+                            song_titles[2] = child.getValue(String.class);
+                            break;
+                        case "song4_title":
+                            song_titles[3] = child.getValue(String.class);
+                            break;
+                        case "song1_artist":
+                            song_artists[0] = child.getValue(String.class);
+                            break;
+                        case "song2_artist":
+                            song_artists[1] = child.getValue(String.class);
+                            break;
+                        case "song3_artist":
+                            song_artists[2] = child.getValue(String.class);
+                            break;
+                        case "song4_artist":
+                            song_artists[3] = child.getValue(String.class);
+                            break;
                     }
                 }
 
@@ -319,6 +359,7 @@ public class PlayingActivity extends Activity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
                 switch (dataSnapshot.getKey()) {
                     case "player1_message":
                         player_messages[0].setText(dataSnapshot.getValue(String.class));
@@ -332,23 +373,27 @@ public class PlayingActivity extends Activity {
                     case "player4_message":
                         player_messages[3].setText(dataSnapshot.getValue(String.class));
                         break;
-                    case "curr_recorder":
-                        currentRecorder = dataSnapshot.getValue(Integer.class);
-                        break;
+//                    case "curr_recorder":
+//                        currentRecorder = dataSnapshot.getValue(Integer.class);
+//                        break;
                     case "player1_point":
                         player_points[0] = dataSnapshot.getValue(Integer.class);
+                        tv_player_points[0].setText(Integer.toString(player_points[0]));
                         onCorrectAnswer(0);
                         break;
                     case "player2_point":
                         player_points[1] = dataSnapshot.getValue(Integer.class);
+                        tv_player_points[1].setText(Integer.toString(player_points[1]));
                         onCorrectAnswer(1);
                         break;
                     case "player3_point":
                         player_points[2] = dataSnapshot.getValue(Integer.class);
+                        tv_player_points[2].setText(Integer.toString(player_points[2]));
                         onCorrectAnswer(2);
                         break;
                     case "player4_point":
                         player_points[3] = dataSnapshot.getValue(Integer.class);
+                        tv_player_points[3].setText(Integer.toString(player_points[3]));
                         onCorrectAnswer(3);
                         break;
                     default:
@@ -425,12 +470,14 @@ public class PlayingActivity extends Activity {
         playMIDI(midi_path);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // databaseReference.child("is_recording").setValue(false);
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("is_recording", false);
+    void nextRound() {
+        if (currentRecorder == myIndex) {
+            Intent i = new Intent(this, RecordingActivity.class);
+            i.putExtra("title", song_titles[currentRound - 1]);
+            i.putExtra("artist", song_artists[currentRound - 1]);
+            i.putExtra("from", "PlayingActivity");
+            startActivityForResult(i, NEXT_ROUND_REQUEST);
+        }
     }
 
     boolean is_recorder() {
@@ -491,6 +538,9 @@ public class PlayingActivity extends Activity {
             }
             public void onFinish() {
                 player_messages[playerIndex].setTextColor(Color.BLACK);
+                int id = getResources().getIdentifier("player" + currentRecorder, "id", getPackageName());
+                LinearLayout recorder = (LinearLayout) findViewById(id);
+                recorder.setBackgroundColor(getResources().getColor(R.color.colorBackground));
                 mPlayer.stop();
                 final Map<String, Object> childUpdates = new HashMap<>();
                 if (currentRecorder > 3) {
@@ -506,7 +556,16 @@ public class PlayingActivity extends Activity {
                 }
                 childUpdates.put("curr_round", currentRound);
                 databaseReference.child("game").updateChildren(childUpdates);
+                currTitle = song_titles[currentRound - 1];
+                currArtist = song_artists[currentRound - 1];
+                nextRound();
             }
         }.start();
+    }
+
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        Log.d("MIMIMIMIMIMidJNDI", RecordingActivity.next_midi);
+
+        databaseReference.child("midi").child("midi_path").setValue(RecordingActivity.next_midi);
     }
 }

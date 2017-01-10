@@ -27,8 +27,10 @@ public class RecordingActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
-    String outputFile = "";
+    public static String next_midi;
 
+    String outputFile = "";
+    String from_activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,7 @@ public class RecordingActivity extends AppCompatActivity {
         title.setText(i.getStringExtra("title"));
         final TextView artist = (TextView) findViewById(R.id.artist);
         artist.setText(i.getStringExtra("artist"));
-
+        from_activity = i.getStringExtra("from");
         countdown = (TextView) findViewById(R.id.record_status);
         recording = (ImageView) findViewById(R.id.recording);
         recording.setVisibility(View.GONE);
@@ -72,10 +74,16 @@ public class RecordingActivity extends AppCompatActivity {
                 recorder.stopRecording(outputFile);
                 String midi_path = recorder.upload(outputFile);
                 Log.d("RECORDING_MIDIPATH", midi_path);
-                Intent i = new Intent(RecordingActivity.this, PlayingActivity.class);
-                i.putExtra("midi_path", midi_path);
-                i.putExtra("is_recorder", true);
-                startActivity(i);
+                if (from_activity.equals("ReadyActivity")) {
+                    Intent i = new Intent(RecordingActivity.this, PlayingActivity.class);
+                    i.putExtra("midi_path", midi_path);
+                    i.putExtra("is_recorder", true);
+                    startActivity(i);
+                }
+                else {
+                    next_midi = midi_path;
+                    finish();
+                }
             }
         }.start();
     }

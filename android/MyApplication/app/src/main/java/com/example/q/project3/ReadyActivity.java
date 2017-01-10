@@ -42,7 +42,7 @@ public class ReadyActivity extends AppCompatActivity {
 
     boolean is_recorder = false;
     ArrayList<String[]> ranks = new ArrayList<>();
-    ArrayList<String[]> songs = new ArrayList<>();
+    public ArrayList<String[]> songs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +104,7 @@ public class ReadyActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), RecordingActivity.class);
                 i.putExtra("title", songs.get(songIndex.get(0))[0]);
                 i.putExtra("artist", songs.get(songIndex.get(0))[1]);
+                i.putExtra("from", "ReadyActivity");
                 startActivity(i);
             }
         });
