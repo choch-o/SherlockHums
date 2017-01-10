@@ -16,14 +16,12 @@ public class AudioPlayer extends MediaPlayer {
 
     void startPlaying(String fileName) {
         mPlayer = new MediaPlayer();
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                Log.d("MP", "COMPLETED!!");
-                mp.release();
-                mp = null;
-            }
-        });
+//        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//
+//            }
+//        });
         try {
             mPlayer.setDataSource(fileName);
             mPlayer.prepare();

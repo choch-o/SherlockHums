@@ -57,10 +57,8 @@ public class RankingListViewAdapter extends BaseAdapter {
         TV_score.setText(ranks.get(position)[3]);
         Bitmap profileImage = getProfileImage(ranks.get(position)[1]);
         IV_profile.setImageBitmap(RoundedImageView.getCroppedBitmap(profileImage, profileImage.getWidth()));
-        Log.d("TEST", "@@@@@@@@@@@@@@@@@@@@ position : " + Integer.toString(position + 1) + " @@@@@@@@@@@@@@@@@@@@ ranks[0] : " + ranks.get(position)[0] + ", userId : " + userId);
 
         if (ranks.get(position)[0].equals(userId)) {
-            Log.d("TEST", "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ranks[0] : " + ranks.get(position)[0] + ", userId : " + userId);
             TV_ranking.setTextColor(context.getResources().getColor(R.color.colorRecorder));
             TV_name.setTextColor(context.getResources().getColor(R.color.colorRecorder));
             TV_score.setTextColor(context.getResources().getColor(R.color.colorRecorder));

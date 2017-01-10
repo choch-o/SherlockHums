@@ -52,6 +52,8 @@ public class PlayingActivity extends Activity {
     private DatabaseReference databaseReference = firebaseDatabase.getReference().child("game");
     private FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private StorageReference storageReference = firebaseStorage.getReferenceFromUrl("gs://sherlockhums-25f4c.appspot.com");
+
+    private String userId = AccessToken.getCurrentAccessToken().getUserId();
     int RECORDER = 1;
     int NONRECORDER = 2;
     int currentRecorder = 1;
@@ -77,7 +79,6 @@ public class PlayingActivity extends Activity {
     ImageView iv_player2_image;
     ImageView iv_player3_image;
     ImageView iv_player4_image;
-
 
     String[] player_uids = new String[4];
     String[] player_names = new String[4];
@@ -159,22 +160,22 @@ public class PlayingActivity extends Activity {
                     switch(child.getKey()) {
                         case "player1_uid":
                             player_uids[0] = child.getValue(String.class);
-                            if (AccessToken.getCurrentAccessToken().getUserId().equals(player_uids[0]))
+                            if (userId.equals(player_uids[0]))
                                 myIndex = 1;
                             break;
                         case "player2_uid":
                             player_uids[1] = child.getValue(String.class);
-                            if (AccessToken.getCurrentAccessToken().getUserId().equals(player_uids[1]))
+                            if (userId.equals(player_uids[1]))
                                 myIndex = 2;
                             break;
                         case "player3_uid":
                             player_uids[2] = child.getValue(String.class);
-                            if (AccessToken.getCurrentAccessToken().getUserId().equals(player_uids[2]))
+                            if (userId.equals(player_uids[2]))
                                 myIndex = 3;
                             break;
                         case "player4_uid":
                             player_uids[3] = child.getValue(String.class);
-                            if (AccessToken.getCurrentAccessToken().getUserId().equals(player_uids[3]))
+                            if (userId.equals(player_uids[3]))
                                 myIndex = 4;
                             break;
                         case "player1_name":
@@ -195,8 +196,8 @@ public class PlayingActivity extends Activity {
                             break;
                         case "player1_image":
                             player_image_urls[0] = child.getValue(String.class);
-                            Bitmap profileImage = getProfileImage(child.getValue(String.class));
-                            iv_player1_image.setImageBitmap(RoundedImageView.getCroppedBitmap(profileImage, profileImage.getWidth()));
+                            Bitmap profileImage1 = getProfileImage(child.getValue(String.class));
+                            iv_player1_image.setImageBitmap(RoundedImageView.getCroppedBitmap(profileImage1, profileImage1.getWidth()));
                             break;
                         case "player2_image":
                             player_image_urls[1] = child.getValue(String.class);
@@ -273,6 +274,24 @@ public class PlayingActivity extends Activity {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                         player.startPlaying(midiFile.getAbsolutePath());
+                                        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                            @Override
+                                            public void onCompletion(MediaPlayer mp) {
+                                                Log.d("MP", "COMPLETED!!");
+                                                mp.release();
+                                                mp = null;
+                                                AudioPlayer secondPlayer = new AudioPlayer();
+                                                secondPlayer.startPlaying(midiFile.getAbsolutePath());
+                                                secondPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                                    @Override
+                                                    public void onCompletion(MediaPlayer mp) {
+                                                        Log.d("MP", "COMPLETED!!");
+                                                        mp.release();
+                                                        mp = null;
+                                                    }
+                                                });
+                                            }
+                                        });
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -354,7 +373,7 @@ public class PlayingActivity extends Activity {
     }
 
     boolean is_recorder() {
-        return (player_uids[currentRecorder - 1].equals(AccessToken.getCurrentAccessToken().getUserId()));
+        return (player_uids[currentRecorder - 1].equals(userId));
     }
 
     public Bitmap getProfileImage(String imagePath) {

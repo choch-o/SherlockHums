@@ -14,7 +14,7 @@ public class ProfileImageLoader extends AsyncTask<String, Void, Bitmap> {
             URI uri = new URI(params[0]);
             uri.normalize();
             URL url = uri.toURL();
-            Log.d("url", url.toString());
+            //Log.d("url", url.toString());
             Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
             return bmp;
         } catch (Exception e) {

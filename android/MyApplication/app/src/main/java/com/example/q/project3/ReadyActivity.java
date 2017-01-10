@@ -58,10 +58,11 @@ public class ReadyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 databaseReference.child("game").child("on_game").setValue(true);
-                Intent i = new Intent(ReadyActivity.this, PlayingActivity.class);
+                Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
                 startActivity(i);
             }
         });
+
         databaseReference.child ("game").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -73,7 +74,7 @@ public class ReadyActivity extends AppCompatActivity {
                 switch (dataSnapshot.getKey()) {
                     case "on_game":
                         if (dataSnapshot.getValue(Boolean.class)) {
-                            Intent i = new Intent(ReadyActivity.this, PlayingActivity.class);
+                            Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
                             startActivity(i);
                         }
                 }
@@ -120,7 +121,7 @@ public class ReadyActivity extends AppCompatActivity {
                     });
 
                     ListView LV_ranking = (ListView) findViewById(R.id.listViewRanking);
-                    RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplication(), ranks);
+                    RankingListViewAdapter rankingListViewAdapter = new RankingListViewAdapter(getApplicationContext(), ranks);
                     LV_ranking.setAdapter(rankingListViewAdapter);
 
                     LV_ranking.setOnItemClickListener(new AdapterView.OnItemClickListener() {
