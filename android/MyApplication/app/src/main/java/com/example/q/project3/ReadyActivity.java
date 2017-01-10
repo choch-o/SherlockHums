@@ -20,9 +20,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Set;
 
 public class ReadyActivity extends AppCompatActivity {
 
@@ -35,6 +42,7 @@ public class ReadyActivity extends AppCompatActivity {
 
     boolean is_recorder = false;
     ArrayList<String[]> ranks = new ArrayList<>();
+    ArrayList<String[]> songs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,27 @@ public class ReadyActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_ready);
+
+//        databaseReference.child("song").child("1").child("title").setValue("보고싶다");
+//        databaseReference.child("song").child("1").child("artist").setValue("김범수");
+//        databaseReference.child("song").child("2").child("title").setValue("나 항상 그대를");
+//        databaseReference.child("song").child("2").child("artist").setValue("이선희");
+//        databaseReference.child("song").child("3").child("title").setValue("Tell me");
+//        databaseReference.child("song").child("3").child("artist").setValue("원더걸스");
+//        databaseReference.child("song").child("4").child("title").setValue("Gee");
+//        databaseReference.child("song").child("4").child("artist").setValue("소녀시대");
+//        databaseReference.child("song").child("5").child("title").setValue("Isn't she lovely");
+//        databaseReference.child("song").child("5").child("artist").setValue("Stevie Wonder");
+//        databaseReference.child("song").child("6").child("title").setValue("무조건");
+//        databaseReference.child("song").child("6").child("artist").setValue("박상철");
+//        databaseReference.child("song").child("7").child("title").setValue("거짓말");
+//        databaseReference.child("song").child("7").child("artist").setValue("빅뱅");
+//        databaseReference.child("song").child("8").child("title").setValue("이별택시");
+//        databaseReference.child("song").child("8").child("artist").setValue("김연우");
+//        databaseReference.child("song").child("9").child("title").setValue("귀로");
+//        databaseReference.child("song").child("9").child("artist").setValue("나얼");
+//        databaseReference.child("song").child("10").child("title").setValue("애인있어요");
+//        databaseReference.child("song").child("10").child("artist").setValue("이은미");
 
         // Check the SDK version and whether the permission is already granted or not.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -58,6 +87,12 @@ public class ReadyActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<Integer> songIndex = getSongsIndex();
+                for(int i = 1; i < 5; i++) {
+                    databaseReference.child("game").child("song" + Integer.toString(i) + "_title").setValue(songs.get(songIndex.get(i - 1))[0]);
+                    databaseReference.child("game").child("song" + Integer.toString(i) + "_artist").setValue(songs.get(songIndex.get(i - 1))[1]);
+                }
+
                 is_recorder = true;
                 databaseReference.child("game").child("on_game").setValue(true);
                 Intent i = new Intent(getApplicationContext(), RecordingActivity.class);
@@ -80,6 +115,8 @@ public class ReadyActivity extends AppCompatActivity {
                         if (dataSnapshot.getValue(Boolean.class) && !is_recorder) {
                             Intent i = new Intent(getApplicationContext(), PlayingActivity.class);
                             i.putExtra("midi_path", "");
+                            i.putExtra("title", "보고싶다");
+                            i.putExtra("artist", "김범수");
                             startActivity(i);
                         }
                 }
@@ -142,6 +179,40 @@ public class ReadyActivity extends AppCompatActivity {
                     Log.d("getUserList:onCancelled", databaseError.toString());
                 }
         });
+
+        databaseReference.child("song").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            String[] data;
+                            data = new String[2];
+                            data[0] = child.child("title").getValue(String.class);
+                            data[1] = child.child("artist").getValue(String.class);
+                            songs.add(data);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+    }
+
+    public ArrayList<Integer> getSongsIndex() {
+        ArrayList<Integer> songsIndex = new ArrayList<>();
+        final Random random = new Random();
+        final Set<Integer> intSet = new HashSet<>();
+        while (intSet.size() < 4) {
+            intSet.add(random.nextInt(10));
+        }
+        final Iterator<Integer> iter = intSet.iterator();
+        for (int i = 0; iter.hasNext(); ++i) {
+            songsIndex.add(iter.next());
+        }
+        return songsIndex;
     }
 
 }

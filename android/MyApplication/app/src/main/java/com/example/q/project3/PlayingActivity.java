@@ -85,6 +85,7 @@ public class PlayingActivity extends Activity {
     String[] player_uids = new String[4];
     String[] player_names = new String[4];
     String[] player_image_urls = new String[4];
+    Integer[] player_points = new Integer[4];
 
     EditText answer_box;
     Button submit_btn;
@@ -106,6 +107,7 @@ public class PlayingActivity extends Activity {
         Intent i = getIntent();
         midiFile = i.getStringExtra("midi_path");
         is_recorder = i.getBooleanExtra("is_recorder", false);
+
 
         GameData gameData = new GameData();
         Map<String, Object> gameValues = gameData.toMap();
@@ -131,6 +133,9 @@ public class PlayingActivity extends Activity {
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String message = answer_box.getText().toString();
+                message = message.replaceAll("\\s+", "");
+
                 databaseReference.child("player" + Integer.toString(myIndex) + "_message")
                         .setValue(answer_box.getText().toString());
                 answer_box.setText("");
@@ -298,22 +303,15 @@ public class PlayingActivity extends Activity {
                             Bitmap profileImage4 = getProfileImage(child.getValue(String.class));
                             iv_player4_image.setImageBitmap(RoundedImageView.getCroppedBitmap(profileImage4, profileImage4.getWidth()));
                             break;
+                        case "player1_point":
+                            player_points[0] = child.getValue(Integer.class);
+                        case "player2_point":
+                            player_points[1] = child.getValue(Integer.class);
+                        case "player3_point":
+                            player_points[2] = child.getValue(Integer.class);
+                        case "player4_point":
+                            player_points[3] = child.getValue(Integer.class);
                     }
-                }
-                try {
-                    tempSongs = new JSONArray(
-                            "[ {\"title\": \"Single lady\", \"artist\": \"Beyonce\"}, "
-                                    + "{\"title\": \"Tell me\", \"artist\": \"원더걸스\"}, "
-                                    + "{\"title\": \"보고싶다\", \"artist\": \"김범수\"}, "
-                                    + "{\"title\": \"나 항상 그대를\", \"artist\": \"이선희\"}, "
-                                    + "{\"title\": \"Hug\", \"artist\": \"동방신기\"}, "
-                                    + "{\"title\": \"Gee\", \"artist\": \"소녀시대\"}, "
-                                    + "{\"title\": \"무조건\", \"artist\": \"박상철\"}, "
-                                    + "{\"title\": \"Isn't she lovely\", \"artist\": \"Stevie Wonder\"} ]"
-                    ) ;
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
                 }
 //                startRound();
 
