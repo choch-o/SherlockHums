@@ -41,7 +41,7 @@ public class ReadyActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_INTERNET = 3;
 
     boolean is_recorder = false;
-    ArrayList<String[]> ranks = new ArrayList<>();
+    public static ArrayList<String[]> ranks = new ArrayList<>();
     public ArrayList<String[]> songs = new ArrayList<>();
 
     @Override

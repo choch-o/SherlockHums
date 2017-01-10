@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.q.project3.RecordingActivity"
-    android:background="@color/colorBackground">
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/title"
@@ -54,70 +54,4 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/artist"
         android:src="@drawable/listening"/>
-    <!--
-    <TextView
-        android:id="@+id/play_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/record_status"
-        android:textColor="#ffffff"
-        android:layout_centerHorizontal="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/play_status"
-        android:gravity="center"
-        android:weightSum="3">
-        <ImageButton
-            android:id="@+id/record_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/record_button"
-            android:background="@drawable/roundedbutton"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/play_button"
-            android:background="@drawable/roundedbutton"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"/>
-
-        <ImageButton
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/search_button"
-            android:background="@drawable/roundedbutton"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"/>
-
-
-        <ImageButton
-            android:id="@+id/pause_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pause_button"
-            android:background="@drawable/roundedbutton"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp" />
-
-        <ImageButton
-            android:id="@+id/stop_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/stop_button"
-            android:background="@drawable/roundedbutton"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp" />
-    </LinearLayout>
-    -->
 </RelativeLayout>

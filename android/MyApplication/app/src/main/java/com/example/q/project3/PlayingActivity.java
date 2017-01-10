@@ -90,6 +90,7 @@ public class PlayingActivity extends Activity {
     String[] player_names = new String[4];
     String[] player_image_urls = new String[4];
     Integer[] player_points = new Integer[4];
+    Integer[] user_score = new Integer[4];
     TextView[] player_messages = new TextView[4];
     String[] song_titles = new String[4];
     String[] song_artists = new String[4];
@@ -544,13 +545,14 @@ public class PlayingActivity extends Activity {
                 mPlayer.stop();
                 final Map<String, Object> childUpdates = new HashMap<>();
                 if (currentRecorder > 3) {
-                    currentRecorder = 1;
+                    // currentRecorder = 1;
+                    finishGame();
                 } else {
                     currentRecorder++;
                 }
                 childUpdates.put("curr_recorder", currentRecorder);
                 if (currentRound > 3) {
-                    currentRound = 1;
+                    finishGame();
                 } else {
                     currentRound++;
                 }
@@ -567,5 +569,12 @@ public class PlayingActivity extends Activity {
         Log.d("MIMIMIMIMIMidJNDI", RecordingActivity.next_midi);
 
         databaseReference.child("midi").child("midi_path").setValue(RecordingActivity.next_midi);
+    }
+
+    void finishGame() {
+        databaseReference.child("user").child(player_uids[myIndex - 1]).child("score").setValue(Integer.parseInt(ReadyActivity.ranks.get(myIndex - 1)[3]) + player_points[myIndex - 1] * 10);
+        databaseReference.child("game").child("on_game").setValue(false);
+        Intent i = new Intent(this, ReadyActivity.class);
+        startActivity(i);
     }
 }

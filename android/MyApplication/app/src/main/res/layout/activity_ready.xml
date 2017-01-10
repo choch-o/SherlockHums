@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@drawable/background">
 
     <ListView
         android:id="@+id/listViewRanking"
@@ -16,8 +16,10 @@
     <Button
         android:id="@+id/start_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="START\n1 / 4"
-        android:textSize="18dp"/>
+        android:layout_height="150dp"
+        android:background="#44000000"
+        android:textColor="#ccffffff"
+        android:text="START"
+        android:textSize="30dp"/>
 
 </LinearLayout>
